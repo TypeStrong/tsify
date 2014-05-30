@@ -1,3 +1,4 @@
+var extend  = require('util-extend');
 var path    = require('path');
 var through = require('through');
 var ts      = require('ts-compiler');
@@ -13,12 +14,13 @@ function sourceFromResult(file) {
 function typescriptify(b, opts) {
 	var tsResults;
 	opts = opts || {};
-	opts.skipWrite = true;
-	opts.module = 'commonjs';
 
 	b.on('bundle', function () {
 		var files = b._entries;
-		ts.compile(files, opts, function (error, results) {
+		var tscOpts = {};
+		extend(tscOpts, opts);
+		extend(tscOpts, { skipWrite: true, module: 'commonjs' });
+		ts.compile(files, tscOpts, function (error, results) {
 			if (error) b.emit('error', new CompileError(error));
 			tsResults = {};
 			if (results) {

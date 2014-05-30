@@ -37,7 +37,7 @@ npm install tsify
 
 **tsify** supports all of the same options as the Typescript compiler itself by using [ts-compiler](https://github.com/jedmao/ts-compiler), including:
 
-#### --mapRoot
+#### --mapRoot=*root*
 
 Specifies the location where debugger should locate map files instead of generated locations.
 
@@ -57,11 +57,11 @@ Do not emit comments to output.
 
 Generates corresponding .map file.
 
-#### --sourceRoot
+#### --sourceRoot=*root*
 
 Specifies the location where debugger should locate TypeScript files instead of source locations.
 
-#### --target
+#### --target=*version*
 
 Specify ECMAScript target version: 'ES3' (default), or 'ES5'
 

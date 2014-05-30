@@ -1,0 +1,34 @@
+{
+  "name": "tsify",
+  "version": "0.1.0",
+  "description": "Browserify plugin for compiling Typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/smrq/tsify"
+  },
+  "keywords": [
+    "browserify",
+    "browserify-plugin",
+    "typescript"
+  ],
+  "author": "Greg Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smrq/tsify/issues"
+  },
+  "homepage": "https://github.com/smrq/tsify",
+  "dependencies": {
+    "through": "~2.3.4",
+    "ts-compiler": "~2.0.0"
+  },
+  "devDependencies": {
+    "ansidiff": "~1.0.0",
+    "browserify": "~4.1.6",
+    "event-stream": "~3.1.5",
+    "q": "~1.0.1"
+  }
+}

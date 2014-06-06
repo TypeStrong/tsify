@@ -31,7 +31,6 @@
     "ansidiff": "~1.0.0",
     "browserify": "~4.1.6",
     "event-stream": "~3.1.5",
-    "q": "~1.0.1",
     "tape": "~2.13.2"
   }
 }

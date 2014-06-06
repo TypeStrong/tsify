@@ -6,7 +6,6 @@ var convert = require('convert-source-map');
 var es = require('event-stream');
 var fs = require('fs');
 var path = require('path');
-var Q = require('q');
 
 test('no arguments', function (t) {
 	t.plan(1);

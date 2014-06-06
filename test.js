@@ -7,13 +7,13 @@ var fs = require('fs');
 var Q = require('q');
 
 test('no arguments', function (t) {
-	runTest(t, {}, 'test/expected.js');
+	runTest(t, {}, {}, 'test/expected.js');
 });
 test('--sourcemap', function (t) {
-	runTest(t, { sourcemap: true }, 'test/expectedSourcemap.js');
+	runTest(t, { sourcemap: true }, { debug: true }, 'test/expectedSourcemap.js');
 });
 
-function runTest(t, tsifyOptions, expectedFile) {
+function runTest(t, tsifyOptions, bundleOptions, expectedFile) {
 	t.plan(1);
 
 	var expectedDefer = Q.defer();
@@ -23,7 +23,7 @@ function runTest(t, tsifyOptions, expectedFile) {
 	browserify({ extensions: ['.ts'] })
 		.add('./test/x.ts')
 		.plugin('./index.js', tsifyOptions)
-		.bundle()
+		.bundle(bundleOptions)
 		.pipe(es.wait(function (err, data) { actualDefer.resolve(data); }));
 
 	Q.all([expectedDefer.promise, actualDefer.promise])

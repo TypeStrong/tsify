@@ -1,3 +1,4 @@
+var convert = require('convert-source-map');
 var extend  = require('util-extend');
 var path    = require('path');
 var through = require('through');
@@ -7,12 +8,8 @@ function isTypescript(file) {
 	return (/\.ts$/i).test(file);
 }
 
-function sourceFromResult(file) {
-	return path.normalize(file).replace(/\.js$/i, '.ts');
-}
-
 function tsify(b, opts) {
-	var tsResults;
+	var tscCache;
 	opts = opts || {};
 	delete opts._;
 
@@ -23,32 +20,55 @@ function tsify(b, opts) {
 		extend(tscOpts, { skipWrite: true, module: 'commonjs' });
 		ts.compile(files, tscOpts, function (error, results) {
 			if (error) b.emit('error', new CompileError(error));
-			tsResults = {};
+			tscCache = {};
 			if (results) {
-				results.forEach(function (result) {
-					tsResults[sourceFromResult(result.name)] = result.text;
-				});
+				results.forEach(function (result) { tscCache[result.name] = result.text; });
 			}
 		});
 	});
 	b.transform(function (file) {
 		if (!isTypescript(file)) return through();
+		var data = '';
 		var stream = through(write, end);
 		return stream;
 
-		function write() { }
+		function write(buf) { data += buf; }
 		function end() {
-			if (!tsResults[file]) {
+			var jsFile = getCompiledFileFromCache(file, data);
+			if (!jsFile) {
 				b.emit('error', new Error('File not compiled: ' + file));
 				stream.queue(null);
 			}
 			else {
-				stream.queue(tsResults[file]);
+				stream.queue(jsFile);
 				stream.queue(null);
 			}
 		};
-	})
+	});
+
+	function getCompiledFileFromCache(tsFile, tsSource) {
+		var jsFile = tsFile.replace(/\.ts$/i, '.js').replace(/\\/g, '/');
+		var jsSource = tscCache[jsFile];
+		if (!jsSource) return null;
+		jsSource = inlineSourcemapFile(jsFile, jsSource, tsSource);
+		return jsSource;
+	}
+
+	function inlineSourcemapFile(jsFile, jsSource, tsSource) {
+		var mapFileComment = convert.mapFileCommentRegex.exec(jsSource);
+		if (!mapFileComment) return jsSource;
+
+		var mapFile = path.resolve(path.dirname(jsFile), mapFileComment[1]).replace(/\\/g, '/');
+		var mapSource = tscCache[mapFile];
+		if (!mapSource) return jsSource;
+
+		var mapObject = convert.fromJSON(mapSource);
+		mapObject.sourcemap.sourcesContent = [tsSource];
+		var mapComment = mapObject.toComment();
+		return jsSource.replace(convert.mapFileCommentRegex, mapComment);
+	}
 }
+
 
 function CompileError(fullMessage) {
     SyntaxError.call(this);

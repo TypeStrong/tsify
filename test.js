@@ -12,7 +12,7 @@ test('no arguments', function (t) {
 
 	var expected = fs.readFileSync('test/expected.js').toString();
 
-	browserify({ extensions: ['.ts'], entries: ['./test/x.ts'] })
+	browserify({ entries: ['./test/x.ts'] })
 		.plugin('./index.js')
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
@@ -26,7 +26,7 @@ test('--sourcemap', function (t) {
 	var expected = fs.readFileSync('test/expectedSourcemap.js').toString();
 	expected = fixPreludePathInSourcemap(expected);
 
-	browserify({ extensions: ['.ts'], entries: ['./test/x.ts'] })
+	browserify({ entries: ['./test/x.ts'] })
 		.plugin('./index.js')
 		.bundle({ debug: true })
 		.pipe(es.wait(function (err, actual) {
@@ -38,7 +38,7 @@ test('syntax error', function (t) {
 	t.plan(4);
 
 	var allErrors = [];
-	browserify({ extensions: ['.ts'], entries: ['./test/syntaxError.ts'] })
+	browserify({ entries: ['./test/syntaxError.ts'] })
 		.plugin('./index.js')
 		.on('error', function (error) {
 			allErrors.push(error);
@@ -56,7 +56,7 @@ test('type error', function (t) {
 	t.plan(4);
 
 	var allErrors = [];
-	browserify({ extensions: ['.ts'], entries: ['./test/typeError.ts'] })
+	browserify({ entries: ['./test/typeError.ts'] })
 		.plugin('./index.js')
 		.on('error', function (error) {
 			allErrors.push(error);

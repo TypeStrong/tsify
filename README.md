@@ -13,13 +13,13 @@
 On the command line:
 
 ``` sh
-$ browserify main.ts -p [ tsify --noImplicitAny ] --extension=".ts" > bundle.js
+$ browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js
 ```
 
 With the Browserify API:
 
 ``` js
-browserify({ extensions: ['.ts'] })
+browserify()
     .add('main.ts')
     .plugin('tsify', { noImplicitAny: true })
     .bundle();

@@ -11,9 +11,10 @@ function sourceFromResult(file) {
 	return path.normalize(file).replace(/\.js$/i, '.ts');
 }
 
-function typescriptify(b, opts) {
+function tsify(b, opts) {
 	var tsResults;
 	opts = opts || {};
+	delete opts._;
 
 	b.on('bundle', function () {
 		var files = b._entries;
@@ -65,4 +66,4 @@ function CompileError(fullMessage) {
 }
 CompileError.prototype = Object.create(SyntaxError.prototype);
 
-module.exports = typescriptify;
+module.exports = tsify;

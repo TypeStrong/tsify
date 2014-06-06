@@ -9,34 +9,82 @@ var path = require('path');
 var Q = require('q');
 
 test('no arguments', function (t) {
+	t.plan(1);
+
 	var expected = fs.readFileSync('test/expected.js').toString();
-	runTest(t, {}, {}, expected);
+
+	browserify({ extensions: ['.ts'], entries: ['./test/x.ts'] })
+		.plugin('./index.js')
+		.bundle()
+		.pipe(es.wait(function (err, actual) {
+			expectCompiledOutput(t, expected, actual);
+		}));
 });
+
 test('--sourcemap', function (t) {
+	t.plan(1);
+
 	var expected = fs.readFileSync('test/expectedSourcemap.js').toString();
-	var sourcemap = convert.fromSource(expected);
+	expected = fixPreludePathInSourcemap(expected);
+
+	browserify({ extensions: ['.ts'], entries: ['./test/x.ts'] })
+		.plugin('./index.js')
+		.bundle({ debug: true })
+		.pipe(es.wait(function (err, actual) {
+			expectCompiledOutput(t, expected, actual);
+		}));
+});
+
+test('syntax error', function (t) {
+	t.plan(4);
+
+	var allErrors = [];
+	browserify({ extensions: ['.ts'], entries: ['./test/syntaxError.ts'] })
+		.plugin('./index.js')
+		.on('error', function (error) {
+			allErrors.push(error);
+		})
+		.bundle()
+		.pipe(es.wait(function () {
+			t.equal(allErrors.length, 4);
+			t.equal(allErrors[0].name, 'TS1005');
+			t.equal(allErrors[1].name, 'TS1005');
+			t.ok(/^File not compiled/.test(allErrors[3].message));
+		}));
+});
+
+test('type error', function (t) {
+	t.plan(4);
+
+	var allErrors = [];
+	browserify({ extensions: ['.ts'], entries: ['./test/typeError.ts'] })
+		.plugin('./index.js')
+		.on('error', function (error) {
+			allErrors.push(error);
+		})
+		.bundle()
+		.pipe(es.wait(function () {
+			t.equal(allErrors.length, 4);
+			t.equal(allErrors[0].name, 'TS2082');
+			t.equal(allErrors[1].name, 'TS2087');
+			t.ok(/^File not compiled/.test(allErrors[3].message));
+		}));
+});
+
+function expectCompiledOutput(t, expected, actual) {
+	actual = actual.replace(/\r\n/g, '\n'); // fix CRLFs on Windows; the expected output uses LFs
+	if (expected === actual) {
+		t.pass('Test passed');
+	} else {
+		console.log(ansidiff.lines(expected, actual));
+		t.fail('Test failed');
+	}
+}
+
+function fixPreludePathInSourcemap(contents) {
+	var sourcemap = convert.fromSource(contents);
 	var sources = sourcemap.getProperty('sources');
 	sources[0] = path.resolve(__dirname, 'node_modules/browserify/node_modules/browser-pack/_prelude.js');
 	sourcemap.setProperty('sources', sources);
-	expected = expected.replace(convert.commentRegex, sourcemap.toComment());
-	runTest(t, { sourcemap: true }, { debug: true }, expected);
-});
-
-function runTest(t, tsifyOptions, bundleOptions, expected) {
-	t.plan(1);
-
-	var actualDefer = Q.defer();
-	browserify({ extensions: ['.ts'] })
-		.add('./test/x.ts')
-		.plugin('./index.js', tsifyOptions)
-		.bundle(bundleOptions)
-		.pipe(es.wait(function (err, actual) { 
-			actual = actual.replace(/\r\n/g, '\n'); // fix CRLFs on Windows; the expected output uses LFs
-			if (expected === actual) {
-				t.pass('Test passed');
-			} else {
-				console.log(ansidiff.lines(expected, actual));
-				t.fail('Test failed');
-			}
-		}));
+	return contents.replace(convert.commentRegex, sourcemap.toComment());
 }

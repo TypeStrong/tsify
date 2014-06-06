@@ -4,16 +4,19 @@ var z = require('./z');
 y('hello world');
 y(z(2).toString());
 
+
 },{"./y":2,"./z":3}],2:[function(require,module,exports){
 function fn(message) {
     console.log(message);
 }
 module.exports = fn;
 
+
 },{}],3:[function(require,module,exports){
 function fn(n) {
     return n * 111;
 }
 module.exports = fn;
+
 
 },{}]},{},[1])

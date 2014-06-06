@@ -35,31 +35,16 @@ npm install tsify
 
 # options
 
-**tsify** supports all of the same options as the Typescript compiler itself by using [ts-compiler](https://github.com/jedmao/ts-compiler), including:
-
-#### --mapRoot=*root*
-
-Specifies the location where debugger should locate map files instead of generated locations.
+* **tsify** will generate sourcemaps if the `--debug` option is set on Browserify.
+* **tsify** supports the following options from the Typescript compiler (via [ts-compiler](https://github.com/jedmao/ts-compiler)):
 
 #### --noImplicitAny
 
 Warn on expressions and declarations with an implied `any` type.
 
-#### --noResolve
-
-Skip resolution and preprocessing.
-
 #### --removeComments
 
 Do not emit comments to output.
-
-#### --sourcemap
-
-Generates corresponding .map file.
-
-#### --sourceRoot=*root*
-
-Specifies the location where debugger should locate TypeScript files instead of source locations.
 
 #### --target=*version*
 

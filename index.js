@@ -11,13 +11,19 @@ function isTypescript(file) {
 function tsify(b, opts) {
 	var tscCache;
 	opts = opts || {};
-	delete opts._;
+	opts = {
+		module: 'commonjs',
+		noImplicitAny: opts.noImplicitAny || false,
+		removeComments: opts.removeComments || false,
+		sourcemap: true,
+		target: opts.target || opts.t || 'ES3',
+		skipWrite: true
+	};
 
 	b.on('bundle', function () {
 		var files = b._entries;
 		var tscOpts = {};
 		extend(tscOpts, opts);
-		extend(tscOpts, { skipWrite: true, module: 'commonjs' });
 		ts.compile(files, tscOpts, function (error, results) {
 			if (error) b.emit('error', new CompileError(error));
 			tscCache = {};

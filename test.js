@@ -16,6 +16,7 @@ browserify({ extensions: ['.ts'] })
 
 Q.all([expectedDefer.promise, actualDefer.promise])
 	.spread(function (expected, actual) {
+		actual = actual.replace(/\r\n/g, '\n'); // fix CRLFs on Windows; the expected output uses LFs
 		if (expected === actual) {
 			console.log('TEST PASSED');
 			process.exit(0);

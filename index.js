@@ -4,7 +4,10 @@ function tsify(b, opts) {
 	var tsifier = new Tsifier(opts);
 	tsifier.on('error', function (error) { b.emit('error', error); });
 	
-	b.on('bundle', function () { tsifier.compileAndCacheFiles(b._entries); });
+	b.on('bundle', function () {
+		tsifier.clearCompilationCache();
+		tsifier.compileAndCacheFiles(b._entries.filter(Tsifier.isTypescript));
+	});
 	
 	b.transform(tsifier.transform.bind(tsifier));
 

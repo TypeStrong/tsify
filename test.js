@@ -20,6 +20,19 @@ test('no arguments', function (t) {
 		}));
 });
 
+test('non-TS main file', function (t) {
+	t.plan(1);
+
+	var expected = fs.readFileSync('test/expected.js').toString();
+
+	browserify({ entries: ['./test/x.js'] })
+		.plugin('./index.js')
+		.bundle()
+		.pipe(es.wait(function (err, actual) {
+			expectCompiledOutput(t, expected, actual);
+		}));
+});
+
 test('--sourcemap', function (t) {
 	t.plan(1);
 
@@ -45,10 +58,10 @@ test('syntax error', function (t) {
 		})
 		.bundle()
 		.pipe(es.wait(function () {
-			t.equal(allErrors.length, 4);
-			t.equal(allErrors[0].name, 'TS1005');
-			t.equal(allErrors[1].name, 'TS1005');
-			t.ok(/^File not compiled/.test(allErrors[3].message));
+			t.equal(allErrors.length, 4, 'Should have 4 errors in total');
+			t.equal(allErrors[0].name, 'TS1005', 'Should have syntax error on first import');
+			t.equal(allErrors[1].name, 'TS1005', 'Should have syntax error on second import');
+			t.ok(/^Compilation error/.test(allErrors[3].message), 'Should have compilation error message for entire file');
 		}));
 });
 
@@ -63,20 +76,20 @@ test('type error', function (t) {
 		})
 		.bundle()
 		.pipe(es.wait(function () {
-			t.equal(allErrors.length, 4);
-			t.equal(allErrors[0].name, 'TS2082');
-			t.equal(allErrors[1].name, 'TS2087');
-			t.ok(/^File not compiled/.test(allErrors[3].message));
+			t.equal(allErrors.length, 4, 'Should have 4 errors in total');
+			t.equal(allErrors[0].name, 'TS2082', 'Should have "Supplied parameters do not match any call signature of target" error');
+			t.equal(allErrors[1].name, 'TS2087', 'Should have "Could not select overload for call expression" error');
+			t.ok(/^Compilation error/.test(allErrors[3].message), 'Should have compilation error message for entire file');
 		}));
 });
 
 function expectCompiledOutput(t, expected, actual) {
 	actual = actual.replace(/\r\n/g, '\n'); // fix CRLFs on Windows; the expected output uses LFs
 	if (expected === actual) {
-		t.pass('Test passed');
+		t.pass('Compiled output should match expected output');
 	} else {
 		console.log(ansidiff.lines(expected, actual));
-		t.fail('Test failed');
+		t.fail('Compiled output should match expected output');
 	}
 }
 

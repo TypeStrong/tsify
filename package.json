@@ -22,15 +22,15 @@
   },
   "homepage": "https://github.com/smrq/tsify",
   "dependencies": {
-    "convert-source-map": "~0.3.4",
-    "through": "~2.3.4",
-    "ts-compiler": "~2.0.0",
-    "util-extend": "~1.0.1"
+    "convert-source-map": "^0.3.4",
+    "through": "^2.3.4",
+    "ts-compiler": "^2.0.0",
+    "util-extend": "^1.0.1"
   },
   "devDependencies": {
-    "ansidiff": "~1.0.0",
-    "browserify": "~4.1.6",
-    "event-stream": "~3.1.5",
-    "tape": "~2.13.2"
+    "ansidiff": "^1.0.0",
+    "browserify": "^4.1.6",
+    "event-stream": "^3.1.5",
+    "tape": "^2.13.2"
   }
 }

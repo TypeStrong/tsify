@@ -12,7 +12,7 @@ function tsify(b, opts) {
 	b.transform(tsifier.transform.bind(tsifier));
 
 	if (b._extensions.indexOf('.ts') === -1)
-		b._extensions.push('.ts');
+		b._extensions.unshift('.ts');
 };
 
 module.exports = tsify;

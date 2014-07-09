@@ -52,6 +52,25 @@ test('--sourcemap', function (t) {
 		}));
 });
 
+test('with adjacent compiled files', function (t) {
+	t.plan(7);
+
+	var expected = fs.readFileSync('test/expectedSourcemap.js').toString();
+	expected = fixPreludePathInSourcemap(expected);
+
+	browserify({ entries: ['./test/withAdjacentCompiledFiles/x.ts'] })
+		.plugin('./index.js')
+		.bundle({ debug: true })
+		.pipe(es.wait(function (err, actual) {
+			var expectedSrc = convert.removeComments(expected);
+			var expectedSourcemap = convert.fromSource(expected).sourcemap;
+			var actualSrc = convert.removeComments(actual);
+			var actualSourcemap = convert.fromSource(actual).sourcemap;
+			expectCompiledOutput(t, expectedSrc, actualSrc);
+			expectSourcemap(t, expectedSourcemap, actualSourcemap)
+		}));
+});
+
 test('syntax error', function (t) {
 	t.plan(4);
 

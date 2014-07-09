@@ -34,7 +34,7 @@ test('non-TS main file', function (t) {
 });
 
 test('--sourcemap', function (t) {
-	t.plan(1);
+	t.plan(7);
 
 	var expected = fs.readFileSync('test/expectedSourcemap.js').toString();
 	expected = fixPreludePathInSourcemap(expected);
@@ -43,7 +43,12 @@ test('--sourcemap', function (t) {
 		.plugin('./index.js')
 		.bundle({ debug: true })
 		.pipe(es.wait(function (err, actual) {
-			expectCompiledOutput(t, expected, actual);
+			var expectedSrc = convert.removeComments(expected);
+			var expectedSourcemap = convert.fromSource(expected).sourcemap;
+			var actualSrc = convert.removeComments(actual);
+			var actualSourcemap = convert.fromSource(actual).sourcemap;
+			expectCompiledOutput(t, expectedSrc, actualSrc);
+			expectSourcemap(t, expectedSourcemap, actualSourcemap)
 		}));
 });
 
@@ -91,6 +96,15 @@ function expectCompiledOutput(t, expected, actual) {
 		console.log(ansidiff.lines(expected, actual));
 		t.fail('Compiled output should match expected output');
 	}
+}
+
+function expectSourcemap(t, expected, actual) {
+	t.equal(actual.version, expected.version, 'Sourcemap version should match');
+	t.equal(actual.file, expected.file, 'Sourcemap file should match');
+	t.deepEqual(actual.sources, expected.sources, 'Sourcemap sources should match');
+	t.deepEqual(actual.names, expected.names, 'Sourcemap names should match');
+	t.equal(actual.mappings, expected.mappings, 'Sourcemap mappings should match');
+	t.deepEqual(actual.sourcesContent, expected.sourcesContent, 'Sourcemap sourcesContent should match');
 }
 
 function fixPreludePathInSourcemap(contents) {

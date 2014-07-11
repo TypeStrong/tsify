@@ -8,113 +8,97 @@ var fs = require('fs');
 var path = require('path');
 
 test('no arguments', function (t) {
-	t.plan(1);
-
-	var expected = fs.readFileSync('test/expected.js').toString();
-
-	browserify({ entries: ['./test/x.ts'] })
-		.plugin('./index.js')
-		.bundle()
-		.pipe(es.wait(function (err, actual) {
-			expectCompiledOutput(t, expected, actual);
-		}));
+	t.plan(8);
+	expectSuccess(t,
+		'./test/noArguments/x.ts',
+		'./test/noArguments/expected.js');
 });
 
 test('non-TS main file', function (t) {
-	t.plan(1);
-
-	var expected = fs.readFileSync('test/expected.js').toString();
-
-	browserify({ entries: ['./test/x.js'] })
-		.plugin('./index.js')
-		.bundle()
-		.pipe(es.wait(function (err, actual) {
-			expectCompiledOutput(t, expected, actual);
-		}));
-});
-
-test('--sourcemap', function (t) {
-	t.plan(7);
-
-	var expected = fs.readFileSync('test/expectedSourcemap.js').toString();
-	expected = fixPreludePathInSourcemap(expected);
-
-	browserify({ entries: ['./test/x.ts'] })
-		.plugin('./index.js')
-		.bundle({ debug: true })
-		.pipe(es.wait(function (err, actual) {
-			var expectedSrc = convert.removeComments(expected);
-			var expectedSourcemap = convert.fromSource(expected).sourcemap;
-			var actualSrc = convert.removeComments(actual);
-			var actualSourcemap = convert.fromSource(actual).sourcemap;
-			expectCompiledOutput(t, expectedSrc, actualSrc);
-			expectSourcemap(t, expectedSourcemap, actualSourcemap)
-		}));
+	t.plan(8);
+	expectSuccess(t,
+		'./test/withJsRoot/x.js',
+		'./test/withJsRoot/expected.js');
 });
 
 test('with adjacent compiled files', function (t) {
-	t.plan(7);
+	t.plan(8);
+	expectSuccess(t,
+		'./test/withAdjacentCompiledFiles/x.ts',
+		'./test/withAdjacentCompiledFiles/expected.js');
+});
 
-	var expected = fs.readFileSync('test/expectedSourcemap.js').toString();
-	expected = fixPreludePathInSourcemap(expected);
-
-	browserify({ entries: ['./test/withAdjacentCompiledFiles/x.ts'] })
-		.plugin('./index.js')
-		.bundle({ debug: true })
-		.pipe(es.wait(function (err, actual) {
-			var expectedSrc = convert.removeComments(expected);
-			var expectedSourcemap = convert.fromSource(expected).sourcemap;
-			var actualSrc = convert.removeComments(actual);
-			var actualSourcemap = convert.fromSource(actual).sourcemap;
-			expectCompiledOutput(t, expectedSrc, actualSrc);
-			expectSourcemap(t, expectedSourcemap, actualSourcemap)
-		}));
+test('with nested dependencies', function (t) {
+	t.plan(8);
+	expectSuccess(t,
+		'./test/withNestedDeps/x.ts',
+		'./test/withNestedDeps/expected.js');
 });
 
 test('syntax error', function (t) {
 	t.plan(4);
-
-	var allErrors = [];
-	browserify({ entries: ['./test/syntaxError.ts'] })
-		.plugin('./index.js')
-		.on('error', function (error) {
-			allErrors.push(error);
-		})
-		.bundle()
-		.pipe(es.wait(function () {
-			t.equal(allErrors.length, 4, 'Should have 4 errors in total');
-			t.equal(allErrors[0].name, 'TS1005', 'Should have syntax error on first import');
-			t.equal(allErrors[1].name, 'TS1005', 'Should have syntax error on second import');
-			t.ok(/^Compilation error/.test(allErrors[3].message), 'Should have compilation error message for entire file');
-		}));
+	run('./test/syntaxError/x.ts', function (errors, actual) {
+		t.equal(errors.length, 4, 'Should have 4 errors in total');
+		t.equal(errors[0].name, 'TS1005', 'Should have syntax error on first import');
+		t.equal(errors[1].name, 'TS1005', 'Should have syntax error on second import');
+		t.ok(/^Compilation error/.test(errors[3].message), 'Should have compilation error message for entire file');
+	});
 });
 
 test('type error', function (t) {
 	t.plan(4);
-
-	var allErrors = [];
-	browserify({ entries: ['./test/typeError.ts'] })
-		.plugin('./index.js')
-		.on('error', function (error) {
-			allErrors.push(error);
-		})
-		.bundle()
-		.pipe(es.wait(function () {
-			t.equal(allErrors.length, 4, 'Should have 4 errors in total');
-			t.equal(allErrors[0].name, 'TS2082', 'Should have "Supplied parameters do not match any call signature of target" error');
-			t.equal(allErrors[1].name, 'TS2087', 'Should have "Could not select overload for call expression" error');
-			t.ok(/^Compilation error/.test(allErrors[3].message), 'Should have compilation error message for entire file');
-		}));
+	run('./test/typeError/x.ts', function (errors, actual) {
+		t.equal(errors.length, 4, 'Should have 4 errors in total');
+		t.equal(errors[0].name, 'TS2082', 'Should have "Supplied parameters do not match any call signature of target" error');
+		t.equal(errors[1].name, 'TS2087', 'Should have "Could not select overload for call expression" error');
+		t.ok(/^Compilation error/.test(errors[3].message), 'Should have compilation error message for entire file');
+	});
 });
 
+function expectSuccess(t, main, expectedFile) {
+	var expected = fs.readFileSync(expectedFile).toString();
+	run(main, function (errors, actual) {
+		t.equal(errors.length, 0, 'Should have no compilation errors');
+		expectCompiledOutput(t, expected, actual);
+	});
+}
+
+function run(main, cb) {
+	var errors = [];
+	browserify({ entries: [main] })
+		.plugin('./index.js')
+		.on('error', function (error) {
+			errors.push(error);
+		})
+		.bundle({ debug: true })
+		.pipe(es.wait(function (err, actual) {
+			cb(errors, actual);
+		}));
+}
+
 function expectCompiledOutput(t, expected, actual) {
-	actual = actual.replace(/\r\n/g, '\n'); // fix CRLFs on Windows; the expected output uses LFs
+	// change absolute paths in sourcemaps to match local filesystem
+	expected = fixAbsolutePathsInSourcemap(expected);
+
+	// fix CRLFs on Windows; the expected output uses LFs
+	actual = actual.replace(/\r\n/g, '\n');
+
+	expectSource(t,
+		convert.removeComments(expected),
+		convert.removeComments(actual));
+
+	expectSourcemap(t,
+		convert.fromSource(expected).sourcemap,
+		convert.fromSource(actual).sourcemap);
+}
+
+function expectSource(t, expected, actual) {
 	if (expected === actual) {
 		t.pass('Compiled output should match expected output');
 	} else {
 		console.log(ansidiff.lines(expected, actual));
 		t.fail('Compiled output should match expected output');
-	}
+	}	
 }
 
 function expectSourcemap(t, expected, actual) {
@@ -126,10 +110,12 @@ function expectSourcemap(t, expected, actual) {
 	t.deepEqual(actual.sourcesContent, expected.sourcesContent, 'Sourcemap sourcesContent should match');
 }
 
-function fixPreludePathInSourcemap(contents) {
+function fixAbsolutePathsInSourcemap(contents) {
 	var sourcemap = convert.fromSource(contents);
 	var sources = sourcemap.getProperty('sources');
-	sources[0] = path.resolve(__dirname, 'node_modules/browserify/node_modules/browser-pack/_prelude.js');
+	sources = sources.map(function (source) {
+		return source.replace('/Users/gregsm/code/tsify', __dirname);
+	});
 	sourcemap.setProperty('sources', sources);
 	return contents.replace(convert.commentRegex, sourcemap.toComment());
 }

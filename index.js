@@ -6,7 +6,7 @@ function tsify(b, opts) {
 	
 	b.on('bundle', function () {
 		tsifier.clearCompilationCache();
-		tsifier.compileAndCacheFiles(b._entries.filter(Tsifier.isTypescript));
+		tsifier.compileAndCacheFiles((b._entries || b._options.entries).filter(Tsifier.isTypescript));
 	});
 	
 	b.transform(tsifier.transform.bind(tsifier));

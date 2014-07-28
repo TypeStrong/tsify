@@ -29,8 +29,10 @@
   },
   "devDependencies": {
     "ansidiff": "^1.0.0",
-    "browserify": "^4.1.6",
     "event-stream": "^3.1.5",
     "tape": "^2.13.2"
+  },
+  "peerDependencies": {
+    "browserify": "^5.9.1 || 4.x"
   }
 }

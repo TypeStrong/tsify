@@ -96,9 +96,14 @@ function expectSource(t, expected, actual) {
 	if (expected === actual) {
 		t.pass('Compiled output should match expected output');
 	} else {
-		console.log(ansidiff.lines(expected, actual));
+		console.log(ansidiff.lines(visibleNewlines(expected), visibleNewlines(actual)));
 		t.fail('Compiled output should match expected output');
 	}
+}
+
+function visibleNewlines(str) {
+	return str.replace(/\r/g, '\\r\r')
+		.replace(/\n/g, '\\n\n');
 }
 
 function expectSourcemap(t, expected, actual) {
@@ -114,7 +119,9 @@ function fixAbsolutePathsInSourcemap(contents) {
 	var sourcemap = convert.fromSource(contents);
 	var sources = sourcemap.getProperty('sources');
 	sources = sources.map(function (source) {
-		return source.replace('/Users/gregsm/code/tsify', __dirname);
+		return source.match('/Users/gregsm/code/tsify') ?
+			path.resolve(process.cwd(), path.relative('/Users/gregsm/code/tsify', source)) :
+			source;
 	});
 	sourcemap.setProperty('sources', sources);
 	return contents.replace(convert.commentRegex, sourcemap.toComment());

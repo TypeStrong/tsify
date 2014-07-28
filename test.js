@@ -65,12 +65,12 @@ function expectSuccess(t, main, expectedFile) {
 
 function run(main, cb) {
 	var errors = [];
-	browserify({ entries: [main] })
+	browserify({ entries: [main], debug: true })
 		.plugin('./index.js')
 		.on('error', function (error) {
 			errors.push(error);
 		})
-		.bundle({ debug: true })
+		.bundle()
 		.pipe(es.wait(function (err, actual) {
 			cb(errors, actual.toString());
 		}));

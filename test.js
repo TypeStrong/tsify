@@ -72,7 +72,7 @@ function run(main, cb) {
 		})
 		.bundle({ debug: true })
 		.pipe(es.wait(function (err, actual) {
-			cb(errors, actual);
+			cb(errors, actual.toString());
 		}));
 }
 
@@ -98,7 +98,7 @@ function expectSource(t, expected, actual) {
 	} else {
 		console.log(ansidiff.lines(expected, actual));
 		t.fail('Compiled output should match expected output');
-	}	
+	}
 }
 
 function expectSourcemap(t, expected, actual) {

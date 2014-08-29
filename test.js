@@ -55,12 +55,25 @@ test('type error', function (t) {
 	});
 });
 
-test('late added entries', function(t) {
+test('multiple entry points', function (t) {
 	t.plan(8);
+	var expected = fs.readFileSync('./test/multipleEntryPoints/expected.js').toString();
+	var errors = [];
+	browserify({ entries: ['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], debug: true })
+		.plugin('./index.js')
+		.on('error', function (error) {
+			errors.push(error);
+		})
+		.bundle()
+		.pipe(es.wait(function (err, actual) {
+			t.equal(errors.length, 0, 'Should have no compilation errors');
+			expectCompiledOutput(t, expected, actual.toString());
+		}));
+});
 
-	// test we properly handle late added entries
+test('late added entries', function (t) {
+	t.plan(8);
 	var expected = fs.readFileSync('./test/noArguments/expected.js').toString();
-
 	var errors = [];
 	browserify({ debug: true })
 		.plugin('./index.js')
@@ -68,6 +81,23 @@ test('late added entries', function(t) {
 			errors.push(error);
 		})
 		.add('./test/noArguments/x.ts')
+		.bundle()
+		.pipe(es.wait(function (err, actual) {
+			t.equal(errors.length, 0, 'Should have no compilation errors');
+			expectCompiledOutput(t, expected, actual.toString());
+		}));
+});
+
+test('late added entries with multiple entry points', function (t) {
+	t.plan(8);
+	var expected = fs.readFileSync('./test/multipleEntryPoints/expected.js').toString();
+	var errors = [];
+	browserify({ entries: ['./test/multipleEntryPoints/y.ts'], debug: true })
+		.plugin('./index.js')
+		.on('error', function (error) {
+			errors.push(error);
+		})
+		.add('./test/multipleEntryPoints/z.ts')
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
 			t.equal(errors.length, 0, 'Should have no compilation errors');

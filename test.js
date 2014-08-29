@@ -55,6 +55,26 @@ test('type error', function (t) {
 	});
 });
 
+test('late added entries', function(t) {
+	t.plan(8);
+
+	// test we properly handle late added entries
+	var expected = fs.readFileSync('./test/noArguments/expected.js').toString();
+
+	var errors = [];
+	browserify({ debug: true })
+		.plugin('./index.js')
+		.on('error', function (error) {
+			errors.push(error);
+		})
+		.add('./test/noArguments/x.ts')
+		.bundle()
+		.pipe(es.wait(function (err, actual) {
+			t.equal(errors.length, 0, 'Should have no compilation errors');
+			expectCompiledOutput(t, expected, actual.toString());
+		}));
+});
+
 function expectSuccess(t, main, expectedFile) {
 	var expected = fs.readFileSync(expectedFile).toString();
 	run(main, function (errors, actual) {

@@ -59,3 +59,16 @@ There are several Typescript compilation transforms available on npm, all with v
 # license
 
 MIT
+
+# changelog
+
+* 0.4.0 - Dropped Browserify 4.x support. Fixed race condition causing pathological performance with some usage patterns, e.g. when used with [karma-bro](https://github.com/Nikku/karma-bro).
+* 0.3.1 - Supported adding files with `bundler.add()`.
+* 0.3.0 - Added Browserify 5.x support.
+* 0.2.1 - Fixed paths for sources in sourcemaps.
+* 0.2.0 - Made Browserify prioritize *.ts files over *.js files in dependency resolution.
+* 0.1.4 - Handled case where the entry point is not a TypeScript file.
+* 0.1.3 - Automatically added *.ts to Browserify's list of file extensions to resolve.
+* 0.1.2 - Added sourcemap support.
+* 0.1.1 - Fixed issue where intermediate *.js files were being written to disk when using `watchify`.
+* 0.1.0 - Initial version.

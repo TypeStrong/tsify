@@ -4,7 +4,7 @@
 
 [![NPM version](https://badge.fury.io/js/tsify.png)](http://badge.fury.io/js/tsify)
 [![build status](https://secure.travis-ci.org/smrq/tsify.png)](http://travis-ci.org/smrq/tsify)
-[![Dependency status](https://david-dm.org/smrq/tsify.png)](https://david-dm.org/smrq/tsify) [![devDependency Status](https://david-dm.org/smrq/tsify/dev-status.png)](https://david-dm.org/smrq/tsify#info=devDependencies)
+[![Dependency status](https://david-dm.org/smrq/tsify.png)](https://david-dm.org/smrq/tsify) [![devDependency Status](https://david-dm.org/smrq/tsify/dev-status.png)](https://david-dm.org/smrq/tsify#info=devDependencies) [![peerDependency Status](https://david-dm.org/smrq/tsify/peer-status.png)](https://david-dm.org/smrq/tsify#info=peerDependencies)
 
 
 
@@ -62,6 +62,7 @@ MIT
 
 # changelog
 
+* 0.5.0 - Updated to Browserify 6.x.
 * 0.4.1 - Added npmignore to clean up published package.
 * 0.4.0 - Dropped Browserify 4.x support. Fixed race condition causing pathological performance with some usage patterns, e.g. when used with [karma-bro](https://github.com/Nikku/karma-bro).
 * 0.3.1 - Supported adding files with `bundler.add()`.

@@ -57,7 +57,8 @@ test('type error', function (t) {
 
 test('multiple entry points', function (t) {
 	t.plan(8);
-	var expected = fs.readFileSync('./test/multipleEntryPoints/expected.js').toString();
+	var expectedFile = './test/multipleEntryPoints/expected.js';
+	var expected = fs.readFileSync(expectedFile).toString();
 	var errors = [];
 	browserify({ entries: ['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], debug: true })
 		.plugin('./index.js')
@@ -67,13 +68,14 @@ test('multiple entry points', function (t) {
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
 			t.equal(errors.length, 0, 'Should have no compilation errors');
-			expectCompiledOutput(t, expected, actual.toString());
+			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
 		}));
 });
 
 test('late added entries', function (t) {
 	t.plan(8);
-	var expected = fs.readFileSync('./test/noArguments/expected.js').toString();
+	var expectedFile = './test/noArguments/expected.js';
+	var expected = fs.readFileSync(expectedFile).toString();
 	var errors = [];
 	browserify({ debug: true })
 		.plugin('./index.js')
@@ -84,13 +86,14 @@ test('late added entries', function (t) {
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
 			t.equal(errors.length, 0, 'Should have no compilation errors');
-			expectCompiledOutput(t, expected, actual.toString());
+			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
 		}));
 });
 
 test('late added entries with multiple entry points', function (t) {
 	t.plan(8);
-	var expected = fs.readFileSync('./test/multipleEntryPoints/expected.js').toString();
+	var expectedFile = './test/multipleEntryPoints/expected.js';
+	var expected = fs.readFileSync(expectedFile).toString();
 	var errors = [];
 	browserify({ entries: ['./test/multipleEntryPoints/y.ts'], debug: true })
 		.plugin('./index.js')
@@ -101,7 +104,7 @@ test('late added entries with multiple entry points', function (t) {
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
 			t.equal(errors.length, 0, 'Should have no compilation errors');
-			expectCompiledOutput(t, expected, actual.toString());
+			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
 		}));
 });
 
@@ -109,7 +112,7 @@ function expectSuccess(t, main, expectedFile) {
 	var expected = fs.readFileSync(expectedFile).toString();
 	run(main, function (errors, actual) {
 		t.equal(errors.length, 0, 'Should have no compilation errors');
-		expectCompiledOutput(t, expected, actual);
+		expectCompiledOutput(t, expected, actual, path.dirname(expectedFile));
 	});
 }
 
@@ -126,19 +129,18 @@ function run(main, cb) {
 		}));
 }
 
-function expectCompiledOutput(t, expected, actual) {
+function expectCompiledOutput(t, expected, actual, sourceDir) {
 	// change absolute paths in sourcemaps to match local filesystem
-	expected = fixAbsolutePathsInSourcemap(expected);
+	//expected = fixAbsolutePathsInSourcemap(expected);
 
 	// fix CRLFs on Windows; the expected output uses LFs
 	actual = actual.replace(/\r\n/g, '\n');
 
 	expectSource(t,
-		convert.removeComments(expected),
+		convert.removeMapFileComments(expected),
 		convert.removeComments(actual));
-
 	expectSourcemap(t,
-		convert.fromSource(expected).sourcemap,
+		convert.fromMapFileSource(expected, sourceDir).sourcemap,
 		convert.fromSource(actual).sourcemap);
 }
 
@@ -159,20 +161,11 @@ function visibleNewlines(str) {
 function expectSourcemap(t, expected, actual) {
 	t.equal(actual.version, expected.version, 'Sourcemap version should match');
 	t.equal(actual.file, expected.file, 'Sourcemap file should match');
-	t.deepEqual(actual.sources, expected.sources, 'Sourcemap sources should match');
+	t.deepEqual(actual.sources.map(function (source) {
+		// fix slash direction on Windows
+		return source.replace(/\\/g, '/');
+	}), expected.sources, 'Sourcemap sources should match');
 	t.deepEqual(actual.names, expected.names, 'Sourcemap names should match');
 	t.equal(actual.mappings, expected.mappings, 'Sourcemap mappings should match');
 	t.deepEqual(actual.sourcesContent, expected.sourcesContent, 'Sourcemap sourcesContent should match');
-}
-
-function fixAbsolutePathsInSourcemap(contents) {
-	var sourcemap = convert.fromSource(contents);
-	var sources = sourcemap.getProperty('sources');
-	sources = sources.map(function (source) {
-		return source.match('/Users/gregsm/code/tsify') ?
-			path.relative('/Users/gregsm/code/tsify', source) :
-			source;
-	});
-	sourcemap.setProperty('sources', sources);
-	return contents.replace(convert.commentRegex, sourcemap.toComment());
 }

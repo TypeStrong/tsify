@@ -62,6 +62,7 @@ MIT
 
 # changelog
 
+* 0.4.1 - Added npmignore to clean up published package.
 * 0.4.0 - Dropped Browserify 4.x support. Fixed race condition causing pathological performance with some usage patterns, e.g. when used with [karma-bro](https://github.com/Nikku/karma-bro).
 * 0.3.1 - Supported adding files with `bundler.add()`.
 * 0.3.0 - Added Browserify 5.x support.

@@ -170,7 +170,7 @@ function fixAbsolutePathsInSourcemap(contents) {
 	var sources = sourcemap.getProperty('sources');
 	sources = sources.map(function (source) {
 		return source.match('/Users/gregsm/code/tsify') ?
-			path.resolve(process.cwd(), path.relative('/Users/gregsm/code/tsify', source)) :
+			path.relative('/Users/gregsm/code/tsify', source) :
 			source;
 	});
 	sourcemap.setProperty('sources', sources);

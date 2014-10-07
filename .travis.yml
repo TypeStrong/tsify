@@ -1,3 +1,12 @@
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
+deploy:
+  provider: npm
+  email: smr.kyu@gmail.com
+  api_key:
+    secure: m/SMBo4PEXrT2MJF8NCsl4jtxc5yGW27GARvDvAYDnqdYtBpGwpLwpWfoNoakLP6PNPtGao8yZUFe1CQ8t3nKS2NYrZdr1lWoczkT8Dxan7ov55jzF5uUagydsik39MCkzgVsJ8p3uQU64WdrI2C4qOsnQItE3ntKtdjPuUe/d4=
+  on:
+    tags: true
+    repo: smrq/tsify
+    branch: master

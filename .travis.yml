@@ -9,4 +9,3 @@ deploy:
   on:
     tags: true
     repo: smrq/tsify
-    branch: master

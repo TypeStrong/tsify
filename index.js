@@ -35,8 +35,8 @@ function gatherDeps(cb) {
 	}
 
 	function flush(next) {
-		cb(rows.map(function (row) { return row.file; }));
-		rows.filter(function (row) { return !Tsifier.isTypescriptDeclaration(row.file); })
+		cb(rows.map(function (row) { return row.file || row.id; }));
+		rows.filter(function (row) { return !Tsifier.isTypescriptDeclaration(row.file || row.id); })
 			.forEach(this.push.bind(this));
 		this.push(null);
 		next();

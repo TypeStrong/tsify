@@ -36,7 +36,8 @@ function gatherDeps(cb) {
 
 	function flush(next) {
 		cb(rows.map(function (row) { return row.file; }));
-		rows.forEach(this.push.bind(this));
+		rows.filter(function (row) { return !Tsifier.isTypescriptDeclaration(row.file); })
+			.forEach(this.push.bind(this));
 		this.push(null);
 		next();
 	}

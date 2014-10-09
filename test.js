@@ -108,6 +108,23 @@ test('late added entries with multiple entry points', function (t) {
 		}));
 });
 
+test('including .d.ts file', function (t) {
+	t.plan(8);
+	var expectedFile = './test/declarationFile/expected.js';
+	var expected = fs.readFileSync(expectedFile).toString();
+	var errors = [];
+	browserify({ entries: ['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'], debug: true })
+		.plugin('./index.js')
+		.on('error', function (error) {
+			errors.push(error);
+		})
+		.bundle()
+		.pipe(es.wait(function (err, actual) {
+			t.equal(errors.length, 0, 'Should have no compilation errors');
+			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
+		}));
+});
+
 function expectSuccess(t, main, expectedFile) {
 	var expected = fs.readFileSync(expectedFile).toString();
 	run(main, function (errors, actual) {

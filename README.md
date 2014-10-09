@@ -62,6 +62,8 @@ MIT
 
 # changelog
 
+* 0.5.2 - Bugfix for 0.5.1 for files not included with expose.
+* 0.5.1 - Handled *.d.ts files passed as entries. Fix for files included with expose.
 * 0.5.0 - Updated to Browserify 6.x.
 * 0.4.1 - Added npmignore to clean up published package.
 * 0.4.0 - Dropped Browserify 4.x support. Fixed race condition causing pathological performance with some usage patterns, e.g. when used with [karma-bro](https://github.com/Nikku/karma-bro).

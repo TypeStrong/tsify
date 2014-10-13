@@ -147,9 +147,6 @@ function run(main, cb) {
 }
 
 function expectCompiledOutput(t, expected, actual, sourceDir) {
-	// change absolute paths in sourcemaps to match local filesystem
-	//expected = fixAbsolutePathsInSourcemap(expected);
-
 	// fix CRLFs on Windows; the expected output uses LFs
 	actual = actual.replace(/\r\n/g, '\n');
 

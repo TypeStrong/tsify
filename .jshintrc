@@ -1,0 +1,12 @@
+{
+	"eqeqeq": true,
+	"newcap": true,
+	"quotmark": "single",
+	"undef": true,
+    "unused": true,
+    "maxlen": 140,
+    "eqnull": true,
+    "loopfunc": true,
+	"browser": false,
+	"node": true
+}

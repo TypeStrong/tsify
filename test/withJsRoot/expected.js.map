@@ -7,12 +7,12 @@
     "test/withJsRoot/z.ts"
   ],
   "names": [],
-  "mappings": "AAAA;ACAA;AACA;AACA;AACA;AACA;AACA;;ACLA,SACS,EAAE,CAAC,OAAe;IAC1B,OAAO,CAAC,GAAG,CAAC,OAAO,CAAC;AACrB,CAAC;AAHD,mBAAY,CAGX;;;;ACHD,SACS,EAAE,CAAC,CAAS;IACpB,OAAO,CAAC,GAAC,GAAG;AACb,CAAC;AAHD,mBAAY,CAGX",
+  "mappings": "AAAA;ACAA;AACA;AACA;AACA;AACA;;ACHA,SAAS,EAAE,CAAC,OAAe;IAC1B,OAAO,CAAC,GAAG,CAAC,OAAO,CAAC,CAAC;AACtB,CAAC;AAHD,iBAAS,EAAE,CAAC;;;ACCZ,SAAS,EAAE,CAAC,CAAS;IACpB,MAAM,CAAC,CAAC,GAAC,GAAG,CAAC;AACd,CAAC;AAHD,iBAAS,EAAE,CAAC",
   "file": "generated.js",
   "sourceRoot": "",
   "sourcesContent": [
     "(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require==\"function\"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error(\"Cannot find module '\"+o+\"'\");throw f.code=\"MODULE_NOT_FOUND\",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require==\"function\"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})",
-    "var y = require('./y');\nvar z = require('./z');\ny('hello world');\ny(z(2).toString());\n\n",
+    "var y = require('./y');\nvar z = require('./z');\ny('hello world');\ny(z(2).toString());\n",
     "export = fn;\nfunction fn(message: string) {\n\tconsole.log(message);\n}",
     "export = fn;\nfunction fn(n: number) {\n\treturn n*111;\n}"
   ]

@@ -4,13 +4,11 @@ var z = require('./z');
 y('hello world');
 y(z(2).toString());
 
-
 },{"./y":2,"./z":3}],2:[function(require,module,exports){
 function fn(message) {
     console.log(message);
 }
 module.exports = fn;
-
 
 },{}],3:[function(require,module,exports){
 function fn(n) {
@@ -18,7 +16,5 @@ function fn(n) {
 }
 module.exports = fn;
 
-
 },{}]},{},[1])
-
 //# sourceMappingURL=expected.js.map

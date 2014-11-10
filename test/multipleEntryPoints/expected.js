@@ -4,14 +4,11 @@ function fn(message) {
 }
 module.exports = fn;
 
-
 },{}],2:[function(require,module,exports){
 function fn(n) {
     return n * 111;
 }
 module.exports = fn;
 
-
 },{}]},{},[1,2])
-
 //# sourceMappingURL=expected.js.map

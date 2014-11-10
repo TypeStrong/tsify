@@ -4,7 +4,8 @@
   "description": "Browserify plugin for compiling Typescript",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js | tap-spec",
+    "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js ."
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,8 @@
   "homepage": "https://github.com/smrq/tsify",
   "dependencies": {
     "convert-source-map": "^0.4.1",
+    "debuglog": "^1.0.1",
+    "lodash": "^2.4.1",
     "through2": "^0.6.2",
     "ts-compiler": "^2.0.0",
     "util-extend": "^1.0.1"
@@ -31,7 +34,12 @@
     "ansidiff": "^1.0.0",
     "browserify": "^6.0.2",
     "event-stream": "^3.1.7",
-    "tape": "^3.0.0"
+    "fs-extra": "^0.12.0",
+    "jshint": "^2.5.10",
+    "jshint-stylish": "^1.0.0",
+    "tap-spec": "^1.0.1",
+    "tape": "^3.0.0",
+    "typescript": "^1.1.0-1"
   },
   "peerDependencies": {
     "browserify": "^6.0.2"

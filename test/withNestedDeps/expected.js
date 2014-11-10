@@ -4,13 +4,11 @@ var z = require('./nested/twice/z');
 y('hello world');
 y(z(2).toString());
 
-
 },{"./nested/twice/z":2,"./nested/y":3}],2:[function(require,module,exports){
 function fn(n) {
     return n * 111;
 }
 module.exports = fn;
-
 
 },{}],3:[function(require,module,exports){
 function fn(message) {
@@ -18,7 +16,5 @@ function fn(message) {
 }
 module.exports = fn;
 
-
 },{}]},{},[1])
-
 //# sourceMappingURL=expected.js.map

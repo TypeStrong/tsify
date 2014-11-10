@@ -9,7 +9,6 @@ function tsify(b, opts) {
 	b.transform(tsifier.transform.bind(tsifier));
 
 	b.on('reset', function () {
-		tsifier.clearCompilationCache();
 		setupPipeline();
 	});
 
@@ -17,28 +16,28 @@ function tsify(b, opts) {
 		if (b._extensions.indexOf('.ts') === -1)
 			b._extensions.unshift('.ts');
 
-		b.pipeline.get('record').push(gatherDeps(function (files) {
-			tsifier.compileAndCacheFiles(files);
-		}));
-	}
-};
-
-module.exports = tsify;
-
-function gatherDeps(cb) {
-	var rows = [];
-	return through.obj(transform, flush);
-
-	function transform(row, enc, next) {
-		rows.push(row);
-		next();
+		b.pipeline.get('record').push(gatherDeps());
 	}
 
-	function flush(next) {
-		cb(rows.map(function (row) { return row.file || row.id; }));
-		rows.filter(function (row) { return !Tsifier.isTypescriptDeclaration(row.file || row.id); })
-			.forEach(this.push.bind(this));
-		this.push(null);
-		next();
+	function gatherDeps() {
+		var rows = [];
+		return through.obj(transform, flush);
+
+		function transform(row, enc, next) {
+			rows.push(row);
+			next();
+		}
+
+		function flush(next) {
+			var self = this;
+			tsifier.reset();
+			tsifier.generateCache(rows.map(function (row) { return row.file || row.id; }));
+			rows.filter(function (row) { return !Tsifier.isTypescriptDeclaration(row.file || row.id); })
+				.forEach(function (row) { self.push(row); });
+			self.push(null);
+			next();
+		}
 	}
 }
+
+module.exports = tsify;

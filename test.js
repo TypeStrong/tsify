@@ -36,40 +36,41 @@ test('with nested dependencies', function (t) {
 });
 
 test('syntax error', function (t) {
-	t.plan(4);
-	run('./test/syntaxError/x.ts', function (errors, actual) {
-		t.equal(errors.length, 4, 'Should have 4 errors in total');
+	t.plan(3);
+	run('./test/syntaxError/x.ts', function (errors) {
+		t.equal(errors.length, 2, 'Should have 2 errors in total');
 		t.equal(errors[0].name, 'TS1005', 'Should have syntax error on first import');
 		t.equal(errors[1].name, 'TS1005', 'Should have syntax error on second import');
-		t.ok(/^Compilation error/.test(errors[3].message), 'Should have compilation error message for entire file');
 	});
 });
 
 test('type error', function (t) {
-	t.plan(4);
-	run('./test/typeError/x.ts', function (errors, actual) {
-		t.equal(errors.length, 4, 'Should have 4 errors in total');
-		t.equal(errors[0].name, 'TS2082', 'Should have "Supplied parameters do not match any call signature of target" error');
-		t.equal(errors[1].name, 'TS2087', 'Should have "Could not select overload for call expression" error');
-		t.ok(/^Compilation error/.test(errors[3].message), 'Should have compilation error message for entire file');
+	t.plan(2);
+	run('./test/typeError/x.ts', function (errors) {
+		t.equal(errors.length, 1, 'Should have 1 error in total');
+		t.equal(errors[0].name, 'TS2345', 'Should have "Argument is not assignable to parameter" error');
 	});
 });
 
 test('multiple entry points', function (t) {
 	t.plan(8);
-	var expectedFile = './test/multipleEntryPoints/expected.js';
-	var expected = fs.readFileSync(expectedFile).toString();
-	var errors = [];
-	browserify({ entries: ['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], debug: true })
-		.plugin('./index.js')
-		.on('error', function (error) {
-			errors.push(error);
-		})
-		.bundle()
-		.pipe(es.wait(function (err, actual) {
-			t.equal(errors.length, 0, 'Should have no compilation errors');
-			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
-		}));
+	expectSuccess(t,
+		['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'],
+		'./test/multipleEntryPoints/expected.js');
+});
+
+test('including .d.ts file', function (t) {
+	t.plan(8);
+	expectSuccess(t,
+		['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'],
+		'./test/declarationFile/expected.js');
+});
+
+test('including external dependencies', function (t) {
+	t.plan(8);
+	expectSuccess(t,
+		'./test/externalDeps/x.ts',
+		'./test/externalDeps/expected.js');
 });
 
 test('late added entries', function (t) {
@@ -85,7 +86,7 @@ test('late added entries', function (t) {
 		.add('./test/noArguments/x.ts')
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
-			t.equal(errors.length, 0, 'Should have no compilation errors');
+			t.deepEqual(errors, [], 'Should have no compilation errors');
 			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
 		}));
 });
@@ -103,24 +104,7 @@ test('late added entries with multiple entry points', function (t) {
 		.add('./test/multipleEntryPoints/z.ts')
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
-			t.equal(errors.length, 0, 'Should have no compilation errors');
-			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
-		}));
-});
-
-test('including .d.ts file', function (t) {
-	t.plan(8);
-	var expectedFile = './test/declarationFile/expected.js';
-	var expected = fs.readFileSync(expectedFile).toString();
-	var errors = [];
-	browserify({ entries: ['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'], debug: true })
-		.plugin('./index.js')
-		.on('error', function (error) {
-			errors.push(error);
-		})
-		.bundle()
-		.pipe(es.wait(function (err, actual) {
-			t.equal(errors.length, 0, 'Should have no compilation errors');
+			t.deepEqual(errors, [], 'Should have no compilation errors');
 			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
 		}));
 });
@@ -128,14 +112,17 @@ test('including .d.ts file', function (t) {
 function expectSuccess(t, main, expectedFile) {
 	var expected = fs.readFileSync(expectedFile).toString();
 	run(main, function (errors, actual) {
-		t.equal(errors.length, 0, 'Should have no compilation errors');
+		t.deepEqual(errors, [], 'Should have no compilation errors');
 		expectCompiledOutput(t, expected, actual, path.dirname(expectedFile));
 	});
 }
 
 function run(main, cb) {
 	var errors = [];
-	browserify({ entries: [main], debug: true })
+	if (!Array.isArray(main))
+		main = [main];
+
+	browserify({ entries: main, debug: true })
 		.plugin('./index.js')
 		.on('error', function (error) {
 			errors.push(error);

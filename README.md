@@ -62,6 +62,7 @@ MIT
 
 # changelog
 
+* 0.6.0 - Updated to TypeScript 1.1 compiler.
 * 0.5.2 - Bugfix for 0.5.1 for files not included with expose.
 * 0.5.1 - Handled *.d.ts files passed as entries. Fix for files included with expose.
 * 0.5.0 - Updated to Browserify 6.x.

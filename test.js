@@ -14,6 +14,13 @@ test('no arguments', function (t) {
 		'./test/noArguments/expected.js');
 });
 
+test('full path includes', function (t) {
+	t.plan(8);
+	expectSuccess(t,
+		path.resolve('./test/noArguments/x.ts'),
+		'./test/noArguments/expected.js');
+});
+
 test('non-TS main file', function (t) {
 	t.plan(8);
 	expectSuccess(t,

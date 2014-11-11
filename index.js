@@ -32,8 +32,7 @@ function tsify(b, opts) {
 			var self = this;
 			tsifier.reset();
 			tsifier.generateCache(rows.map(function (row) { return row.file || row.id; }));
-			rows.filter(function (row) { return !Tsifier.isTypescriptDeclaration(row.file || row.id); })
-				.forEach(function (row) { self.push(row); });
+			rows.forEach(function (row) { self.push(row); });
 			self.push(null);
 			next();
 		}

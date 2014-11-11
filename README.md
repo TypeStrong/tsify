@@ -62,6 +62,7 @@ MIT
 
 # changelog
 
+* 0.6.2 - Include empty *.d.ts compiled files in bundle for Karma compatibility.
 * 0.6.1 - Fix compilation cache miss when given absolute filenames.
 * 0.6.0 - Updated to TypeScript 1.1 compiler.
 * 0.5.2 - Bugfix for 0.5.1 for files not included with expose.

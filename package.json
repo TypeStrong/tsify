@@ -26,9 +26,7 @@
     "convert-source-map": "^0.4.1",
     "debuglog": "^1.0.1",
     "lodash": "^2.4.1",
-    "through2": "^0.6.2",
-    "ts-compiler": "^2.0.0",
-    "util-extend": "^1.0.1"
+    "through2": "^0.6.2"
   },
   "devDependencies": {
     "ansidiff": "^1.0.0",

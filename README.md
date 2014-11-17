@@ -1,6 +1,6 @@
 # tsify
 
-[Browserify](http://browserify.org/) plugin for compiling [TypeScript](http://www.typescriptlang.org/) 1.1
+[Browserify](http://browserify.org/) plugin for compiling [TypeScript](http://www.typescriptlang.org/) 1.3
 
 [![NPM version](https://badge.fury.io/js/tsify.png)](http://badge.fury.io/js/tsify)
 [![build status](https://secure.travis-ci.org/smrq/tsify.png)](http://travis-ci.org/smrq/tsify)
@@ -62,14 +62,15 @@ MIT
 
 # changelog
 
+* 0.6.3 - Updated to TypeScript 1.3.
 * 0.6.2 - Include empty *.d.ts compiled files in bundle for Karma compatibility.
 * 0.6.1 - Fix compilation cache miss when given absolute filenames.
-* 0.6.0 - Updated to TypeScript 1.1 compiler.
+* 0.6.0 - Updated to TypeScript 1.1.
 * 0.5.2 - Bugfix for 0.5.1 for files not included with expose.
 * 0.5.1 - Handled *.d.ts files passed as entries. Fix for files included with expose.
 * 0.5.0 - Updated to Browserify 6.x.
 * 0.4.1 - Added npmignore to clean up published package.
-* 0.4.0 - Dropped Browserify 4.x support. Fixed race condition causing pathological performance with some usage patterns, e.g. when used with [karma-bro](https://github.com/Nikku/karma-bro).
+* 0.4.0 - Dropped Browserify 4.x support. Fixed race condition causing pathological performance with some usage patterns, e.g. when used with [karma-browserify](https://github.com/Nikku/karma-browserify).
 * 0.3.1 - Supported adding files with `bundler.add()`.
 * 0.3.0 - Added Browserify 5.x support.
 * 0.2.1 - Fixed paths for sources in sourcemaps.

@@ -54,11 +54,11 @@ Specify ECMAScript target version: 'ES3' (default), or 'ES5'
 
 ### Watchify?
 
-Yes!  `tsify` can do incremental compilation using [watchify](//github.com/substack/watchify), resulting in much faster incremental build times.  Just follow the Watchify documentation, and add `tsify` as a plugin as indicated in the documentation above.
+Yes!  **tsify** can do incremental compilation using [watchify](//github.com/substack/watchify), resulting in much faster incremental build times.  Just follow the Watchify documentation, and add **tsify** as a plugin as indicated in the documentation above.
 
 ### Gulp?
 
-No problem.  See the Gulp recipes on using [browserify](//github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md) and [watchify](//github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md), and add `tsify` as a plugin as indicated in the documentation above.
+No problem.  See the Gulp recipes on using [browserify](//github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md) and [watchify](//github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md), and add **tsify** as a plugin as indicated in the documentation above.
 
 ### IE 11?
 

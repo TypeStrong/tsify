@@ -50,6 +50,20 @@ Do not emit comments to output.
 
 Specify ECMAScript target version: 'ES3' (default), or 'ES5'
 
+# does this work with...
+
+### Watchify?
+
+Yes!  `tsify` can do incremental compilation using [watchify](//github.com/substack/watchify), resulting in much faster incremental build times.  Just follow the Watchify documentation, and add `tsify` as a plugin as indicated in the documentation above.
+
+### Gulp?
+
+No problem.  See the Gulp recipes on using [browserify](//github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md) and [watchify](//github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md), and add `tsify` as a plugin as indicated in the documentation above.
+
+### IE 11?
+
+The inlined sourcemaps that Browserify generates [may not be readable by IE 11](//github.com/smrq/tsify/issues/19) for debugging purposes.  This is easy to fix by adding [exorcist](//github.com/thlorenz/exorcist) to your build workflow after Browserify.
+
 # why a plugin?
 
 There are several TypeScript compilation transforms available on npm, all with various issues.  The TypeScript compiler automatically performs dependency resolution on module imports, much like Browserify itself.  Browserify transforms are not flexible enough to deal with multiple file outputs given a single file input, which means that any working TypeScript compilation transform either skips the resolution step (which is necessary for complete type checking) or performs multiple compilations of source files further down the dependency graph.

@@ -43,19 +43,34 @@ test('with nested dependencies', function (t) {
 });
 
 test('syntax error', function (t) {
-	t.plan(3);
+	t.plan(13);
 	run('./test/syntaxError/x.ts', function (errors) {
 		t.equal(errors.length, 2, 'Should have 2 errors in total');
 		t.equal(errors[0].name, 'TS1005', 'Should have syntax error on first import');
+		t.equal(errors[0].line, 1, 'First error should be on line 1');
+		t.equal(errors[0].column, 9, 'First error should be on column 9');
+		t.ok(errors[0].message.match(/test\/syntaxError\/x\.ts/), 'First error message should contain file info');
+		t.ok(errors[0].message.match(/\(1,9\)/), 'First error message should contain position info');
+		t.ok(errors[0].message.match(/TS1005/), 'First error message should contain error info');
 		t.equal(errors[1].name, 'TS1005', 'Should have syntax error on second import');
+		t.equal(errors[1].line, 2, 'Second error should be on line 2');
+		t.equal(errors[1].column, 9, 'Second error should be on column 9');
+		t.ok(errors[1].message.match(/test\/syntaxError\/x\.ts/), 'First error message should contain file info');
+		t.ok(errors[1].message.match(/\(2,9\)/), 'Second error message should contain position info');
+		t.ok(errors[1].message.match(/TS1005/), 'Second error message should contain error info');
 	});
 });
 
 test('type error', function (t) {
-	t.plan(2);
+	t.plan(7);
 	run('./test/typeError/x.ts', function (errors) {
 		t.equal(errors.length, 1, 'Should have 1 error in total');
 		t.equal(errors[0].name, 'TS2345', 'Should have "Argument is not assignable to parameter" error');
+		t.equal(errors[0].line, 4, 'Error should be on line 4');
+		t.equal(errors[0].column, 3, 'Error should be on column 3');
+		t.ok(errors[0].message.match(/test\/typeError\/x\.ts/), 'Error message should contain file info');
+		t.ok(errors[0].message.match(/\(4,3\)/), 'Error message should contain position info');
+		t.ok(errors[0].message.match(/TS2345/), 'Error message should contain error info');
 	});
 });
 

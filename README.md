@@ -60,6 +60,10 @@ Yes!  **tsify** can do incremental compilation using [watchify](//github.com/sub
 
 No problem.  See the Gulp recipes on using [browserify](//github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md) and [watchify](//github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md), and add **tsify** as a plugin as indicated in the documentation above.
 
+### Grunt?
+
+Use [grunt-browserify](https://github.com/jmreidy/grunt-browserify) and you should be good!  Just add **tsify** as a plugin in your Grunt configuration.
+
 ### IE 11?
 
 The inlined sourcemaps that Browserify generates [may not be readable by IE 11](//github.com/smrq/tsify/issues/19) for debugging purposes.  This is easy to fix by adding [exorcist](//github.com/thlorenz/exorcist) to your build workflow after Browserify.

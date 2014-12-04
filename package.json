@@ -40,6 +40,6 @@
     "typescript": "^1.3.0"
   },
   "peerDependencies": {
-    "browserify": "^6.0.2"
+    "browserify": "6.x || 7.x"
   }
 }

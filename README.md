@@ -80,6 +80,7 @@ MIT
 
 # changelog
 
+* 0.6.5 - Updated peerDependency for Browserify 7.x
 * 0.6.4 - Included richer file position information in syntax error messages.
 * 0.6.3 - Updated to TypeScript 1.3.
 * 0.6.2 - Included empty *.d.ts compiled files in bundle for Karma compatibility.

@@ -6,6 +6,7 @@ var convert = require('convert-source-map');
 var es = require('event-stream');
 var fs = require('fs');
 var path = require('path');
+var watchify = require('watchify');
 
 test('no arguments', function (t) {
 	t.plan(8);
@@ -192,3 +193,50 @@ function expectSourcemap(t, expected, actual) {
 	t.equal(actual.mappings, expected.mappings, 'Sourcemap mappings should match');
 	t.deepEqual(actual.sourcesContent, expected.sourcesContent, 'Sourcemap sourcesContent should match');
 }
+
+test('watchify', function (t) {
+	var errors = [];
+	var b = watchify(browserify(watchify.args))
+		.plugin('./index.js')
+		.add('./test/watchify/.tmp.ts')
+		.on('error', function (error) {
+			errors.push(error);
+		})
+		.on('update', rebundle);
+
+	copy('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+	var handlers = [
+		function (err, actual) {
+			t.deepEqual(errors, [], 'Should have no compilation errors');
+			copy('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
+		},
+		function (err, actual) {
+			t.ok(errors.length > 0, 'Should have type errors');
+			errors = [];
+			copy('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
+		},
+		function (err, actual) {
+			t.ok(errors.length > 0, 'Should have syntax errors');
+			errors = [];
+			copy('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+		},
+		function (err, actual) {
+			t.deepEqual(errors, [], 'Should have no compilation errors');
+			// wait for Watchify to finish adding any outstanding watchers
+			setTimeout(function () {
+				b.close();
+				t.end();
+			}, 500);
+		}
+	];
+
+	rebundle();
+
+	function copy(src, dest) {
+		fs.createReadStream(src).pipe(fs.createWriteStream(dest));
+	}
+
+	function rebundle() {
+		return b.bundle().pipe(es.wait(handlers.shift()));
+	}
+});

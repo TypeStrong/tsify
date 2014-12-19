@@ -4,7 +4,7 @@ var ansidiff = require('ansidiff');
 var browserify = require('browserify');
 var convert = require('convert-source-map');
 var es = require('event-stream');
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var watchify = require('watchify');
 
@@ -147,10 +147,10 @@ function run(main, cb) {
 
 	browserify({ entries: main, debug: true })
 		.plugin('./index.js')
+		.bundle()
 		.on('error', function (error) {
 			errors.push(error);
 		})
-		.bundle()
 		.pipe(es.wait(function (err, actual) {
 			cb(errors, actual.toString());
 		}));
@@ -198,45 +198,42 @@ test('watchify', function (t) {
 	var errors = [];
 	var b = watchify(browserify(watchify.args))
 		.plugin('./index.js')
-		.add('./test/watchify/.tmp.ts')
-		.on('error', function (error) {
-			errors.push(error);
-		})
+		.add('./test/watchify/main.ts')
 		.on('update', rebundle);
 
-	copy('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
 	var handlers = [
-		function (err, actual) {
+		function () {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
-			copy('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
+			fs.copySync('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
 		},
 		function (err, actual) {
 			t.ok(errors.length > 0, 'Should have type errors');
 			errors = [];
-			copy('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
+			fs.copySync('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
 		},
 		function (err, actual) {
 			t.ok(errors.length > 0, 'Should have syntax errors');
 			errors = [];
-			copy('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+			fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
 		},
 		function (err, actual) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
-			// wait for Watchify to finish adding any outstanding watchers
-			setTimeout(function () {
-				b.close();
-				t.end();
-			}, 500);
+			b.close();
+			t.end();
 		}
 	];
 
 	rebundle();
 
-	function copy(src, dest) {
-		fs.createReadStream(src).pipe(fs.createWriteStream(dest));
-	}
-
 	function rebundle() {
-		return b.bundle().pipe(es.wait(handlers.shift()));
+		return b.bundle()
+			.on('error', function (error) {
+				errors.push(error);
+			})
+			.pipe(es.wait(function (err, actual) {
+				// hack to wait for Watchify to finish adding any outstanding watchers
+				setTimeout(handlers.shift(), 100);
+			}));
 	}
 });

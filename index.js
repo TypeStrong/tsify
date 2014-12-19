@@ -3,7 +3,9 @@ var through = require('through2');
 
 function tsify(b, opts) {
 	var tsifier = new Tsifier(opts);
-	tsifier.on('error', function (error) { b.emit('error', error); });
+	tsifier.on('error', function (error) {
+		b.pipeline.emit('error', error);
+	});
 
 	setupPipeline();
 	b.transform(tsifier.transform.bind(tsifier));
@@ -16,10 +18,10 @@ function tsify(b, opts) {
 		if (b._extensions.indexOf('.ts') === -1)
 			b._extensions.unshift('.ts');
 
-		b.pipeline.get('record').push(gatherDeps());
+		b.pipeline.get('record').push(gatherEntryPoints());
 	}
 
-	function gatherDeps() {
+	function gatherEntryPoints() {
 		var rows = [];
 		return through.obj(transform, flush);
 

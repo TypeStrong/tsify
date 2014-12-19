@@ -1,1 +1,2 @@
-console.log('error!', parseInt('1', 10);
+function dep(n: number) { console.log(n+1); }
+export =

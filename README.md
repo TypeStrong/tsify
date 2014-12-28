@@ -80,6 +80,7 @@ MIT
 
 # changelog
 
+* 0.7.1 - Updated peerDependency for Browserify 8.x
 * 0.7.0 - Updated error handling for compatibility with Watchify
 * 0.6.5 - Updated peerDependency for Browserify 7.x
 * 0.6.4 - Included richer file position information in syntax error messages.

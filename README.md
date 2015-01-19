@@ -80,6 +80,7 @@ MIT
 
 # changelog
 
+* 0.8.0 - Updated to TypeScript 1.4.1.
 * 0.7.1 - Updated peerDependency for Browserify 8.x
 * 0.7.0 - Updated error handling for compatibility with Watchify
 * 0.6.5 - Updated peerDependency for Browserify 7.x

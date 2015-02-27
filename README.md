@@ -2,11 +2,11 @@
 
 [Browserify](http://browserify.org/) plugin for compiling [TypeScript](http://www.typescriptlang.org/) 1.4
 
-[![NPM version](https://badge.fury.io/js/tsify.png)](http://badge.fury.io/js/tsify)
-[![build status](https://secure.travis-ci.org/smrq/tsify.png)](http://travis-ci.org/smrq/tsify)
-[![Dependency status](https://david-dm.org/smrq/tsify.png)](https://david-dm.org/smrq/tsify) [![devDependency Status](https://david-dm.org/smrq/tsify/dev-status.png)](https://david-dm.org/smrq/tsify#info=devDependencies) [![peerDependency Status](https://david-dm.org/smrq/tsify/peer-status.png)](https://david-dm.org/smrq/tsify#info=peerDependencies)
-
-
+[![NPM version](https://img.shields.io/npm/v/tsify.svg)](https://www.npmjs.com/package/tsify)
+[![Build status](https://img.shields.io/travis/smrq/tsify.svg)](http://travis-ci.org/smrq/tsify)
+[![Dependency status](https://img.shields.io/david/smrq/tsify.svg)](https://david-dm.org/smrq/tsify)
+[![devDependency Status](https://img.shields.io/david/dev/smrq/tsify.svg)](https://david-dm.org/smrq/tsify#info=devDependencies)
+[![peerDependency Status](https://img.shields.io/david/peer/smrq/tsify.svg)](https://david-dm.org/smrq/tsify#info=peerDependencies)
 
 # example usage
 

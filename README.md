@@ -80,6 +80,7 @@ MIT
 
 # changelog
 
+* 0.8.2 - Updated peerDependency for Browserify to allow any version >= 6.x
 * 0.8.1 - Updated peerDependency for Browserify 9.x
 * 0.8.0 - Updated to TypeScript 1.4.1.
 * 0.7.1 - Updated peerDependency for Browserify 8.x

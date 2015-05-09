@@ -65,6 +65,7 @@ test('syntax error', function (t) {
 test('type error', function (t) {
 	t.plan(7);
 	run('./test/typeError/x.ts', function (errors) {
+		debugger;
 		t.equal(errors.length, 1, 'Should have 1 error in total');
 		t.equal(errors[0].name, 'TS2345', 'Should have "Argument is not assignable to parameter" error');
 		t.equal(errors[0].line, 4, 'Error should be on line 4');
@@ -186,6 +187,15 @@ function expectSourcemap(t, expected, actual) {
 	t.equal(actual.version, expected.version, 'Sourcemap version should match');
 	t.equal(actual.file, expected.file, 'Sourcemap file should match');
 	t.deepEqual(actual.sources.map(function (source) {
+		// The following code fixes an odd bug with browserify (out of our control) in which it produces sourcemap paths
+		// that are strangely relative yet technically correct when it's running from within a directory
+		// junction on windows. It does this by resolving out symlinks fully to compare actual relative paths.
+		var path = require("path");
+		var fs = require("fs");
+		var cwd = fs.realpathSync(process.cwd());
+		source = fs.realpathSync(source);
+		source = path.relative(cwd, source);
+
 		// fix slash direction on Windows
 		return source.replace(/\\/g, '/');
 	}), expected.sources, 'Sourcemap sources should match');

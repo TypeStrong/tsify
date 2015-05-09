@@ -26,7 +26,8 @@
     "convert-source-map": "^1.1.0",
     "debuglog": "^1.0.1",
     "lodash": "^3.8.0",
-    "through2": "^0.6.5"
+    "through2": "^0.6.5",
+    "typescript": "^1.4.1"
   },
   "devDependencies": {
     "ansidiff": "^1.0.0",
@@ -38,7 +39,6 @@
     "node-foo": "^0.2.3",
     "tap-spec": "^3.0.0",
     "tape": "^4.0.0",
-    "typescript": "^1.5.0-beta",
     "watchify": "^3.2.1"
   },
   "peerDependencies": {

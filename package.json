@@ -4,7 +4,8 @@
   "description": "Browserify plugin for compiling Typescript",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js | tap-spec",
+    "test": "test-peer-range browserify",
+    "test-main": "node test/test.js | tap-spec",
     "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js ."
   },
   "repository": {
@@ -38,6 +39,7 @@
     "node-foo": "^0.2.3",
     "tap-spec": "^3.0.0",
     "tape": "^4.0.0",
+    "test-peer-range": "^1.0.1",
     "typescript": "^1.5.0-beta",
     "watchify": "^3.2.1"
   },

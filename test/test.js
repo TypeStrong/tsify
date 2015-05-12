@@ -4,12 +4,12 @@ var ansidiff = require('ansidiff');
 var browserify = require('browserify');
 var convert = require('convert-source-map');
 var es = require('event-stream');
+var EventEmitter = require('events').EventEmitter;
 var fs = require('fs-extra');
 var path = require('path');
 var watchify = require('watchify');
 
 var buildTimeout = 5000;
-var watchInterval = 3000;
 
 // Tests
 
@@ -127,19 +127,22 @@ test('late added entries with multiple entry points', function (t) {
 test('watchify', function (t) {
 	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
 	runWatchify('./test/watchify/main.ts', [
-		function (errors, actual) {
+		function (errors, actual, triggerChange) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
 			fs.copySync('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
+			triggerChange();
 		},
-		function (errors, actual) {
+		function (errors, actual, triggerChange) {
 			t.ok(errors.length > 0, 'Should have type errors');
 			fs.copySync('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
+			triggerChange();
 		},
-		function (errors, actual) {
+		function (errors, actual, triggerChange) {
 			t.ok(errors.length > 0, 'Should have syntax errors');
 			fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+			triggerChange();
 		},
-		function (errors, actual, b) {
+		function (errors, actual, triggerChange, b) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
 			b.close();
 			t.end();
@@ -204,16 +207,17 @@ function runWatchify(add, tsifyOpts, handlers) {
 		tsifyOpts = {};
 	}
 
-	var b = watchify(browserify(watchify.args), { poll: watchInterval })
-		.plugin('./index.js', tsifyOpts);
+	var watcher = new EventEmitter();
+	watcher.close = function () {};
 
+	var b = watchify(browserify(watchify.args));
+	b._watcher = function (file, opts) { return watcher; };
+	b.plugin('./index.js', tsifyOpts);
 	add.forEach(function (entry) {
 		b.add(entry);
 	});
-
 	b.on('update', rebundle);
 	rebundle();
-
 
 	function rebundle() {
 		var calledBack = false;
@@ -242,8 +246,12 @@ function runWatchify(add, tsifyOpts, handlers) {
 		// hack to wait for Watchify to finish adding any outstanding watchers
 		setTimeout(function () {
 			var cb = handlers.shift();
-			cb(errors, actual, b);
+			cb(errors, actual, triggerChange, b);
 		}, 100);
+	}
+
+	function triggerChange() {
+		watcher.emit('change');
 	}
 }
 

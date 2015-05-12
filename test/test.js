@@ -8,175 +8,173 @@ var fs = require('fs-extra');
 var path = require('path');
 var watchify = require('watchify');
 
+var buildTimeout = 1000;
+
+// Tests
+
 test('no arguments', function (t) {
-	t.plan(8);
 	run('./test/noArguments/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/noArguments/expected.js');
+		t.end();
 	});
 });
 
 test('full path includes', function (t) {
-	t.plan(8);
 	run(path.resolve('./test/noArguments/x.ts'), function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/noArguments/expected.js');
+		t.end();
 	});
 });
 
 test('non-TS main file', function (t) {
-	t.plan(8);
 	run('./test/withJsRoot/x.js', function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/withJsRoot/expected.js');
+		t.end();
 	});
 });
 
 test('with adjacent compiled files', function (t) {
-	t.plan(8);
 	run('./test/withAdjacentCompiledFiles/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/withAdjacentCompiledFiles/expected.js');
+		t.end();
 	});
 });
 
 test('with nested dependencies', function (t) {
-	t.plan(8);
 	run('./test/withNestedDeps/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/withNestedDeps/expected.js');
+		t.end();
 	});
 });
 
 test('syntax error', function (t) {
-	t.plan(13);
 	run('./test/syntaxError/x.ts', function (errors, actual) {
 		expectErrors(t, errors, [
 			{ name: 'TS1005', line: 1, column: 9, file: 'test/syntaxError/x.ts' },
 			{ name: 'TS1005', line: 2, column: 9, file: 'test/syntaxError/x.ts' }
 		]);
+		expectNoOutput(t, actual);
+		t.end();
 	});
 });
 
 test('type error', function (t) {
-	t.plan(7);
-	run('./test/typeError/x.ts', function (errors) {
+	run('./test/typeError/x.ts', function (errors, actual) {
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
 		]);
+		expectOutput(t, actual, './test/typeError/expected.js');
+		t.end();
+	});
+});
+
+test('type error with stopOnError', function (t) {
+	run('./test/typeError/x.ts', { stopOnError: true }, function (errors, actual) {
+		expectErrors(t, errors, [
+			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
+		]);
+		expectNoOutput(t, actual);
+		t.end();
 	});
 });
 
 test('multiple entry points', function (t) {
-	t.plan(8);
 	run(['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/multipleEntryPoints/expected.js');
+		t.end();
 	});
 });
 
 test('including .d.ts file', function (t) {
-	t.plan(8);
 	run(['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'], function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/declarationFile/expected.js');
+		t.end();
 	});
 });
 
 test('including external dependencies', function (t) {
-	t.plan(8);
 	run('./test/externalDeps/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual, './test/externalDeps/expected.js');
+		t.end();
 	});
 });
 
 test('late added entries', function (t) {
-	t.plan(8);
 	runLateAdded('./test/noArguments/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual.toString(), './test/noArguments/expected.js');
+		t.end();
 	});
 });
 
 test('late added entries with multiple entry points', function (t) {
-	t.plan(8);
 	runLateAdded(['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectOutput(t, actual.toString(), './test/multipleEntryPoints/expected.js');
+		t.end();
 	});
 });
 
 test('watchify', function (t) {
-	var errors = [];
-	var b = watchify(browserify(watchify.args))
-		.plugin('./index.js')
-		.add('./test/watchify/main.ts')
-		.on('update', rebundle);
-
 	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
-	var handlers = [
-		function () {
+	runWatchify('./test/watchify/main.ts', [
+		function (errors, actual) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
 			fs.copySync('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
 		},
-		function (err, actual) {
+		function (errors, actual) {
 			t.ok(errors.length > 0, 'Should have type errors');
 			errors = [];
 			fs.copySync('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
 		},
-		function (err, actual) {
+		function (errors, actual) {
 			t.ok(errors.length > 0, 'Should have syntax errors');
 			errors = [];
 			fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
 		},
-		function (err, actual) {
+		function (errors, actual, b) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
 			b.close();
 			t.end();
 		}
-	];
-
-	rebundle();
-
-	function rebundle() {
-		return b.bundle()
-			.on('error', function (error) {
-				errors.push(error);
-			})
-			.pipe(es.wait(function (err, actual) {
-				// hack to wait for Watchify to finish adding any outstanding watchers
-				setTimeout(handlers.shift(), 100);
-			}));
-	}
+	]);
 });
 
+// Test helpers
 
-function run(main, cb) {
-	var errors = [];
-	if (!Array.isArray(main))
-		main = [main];
-
-	browserify({ entries: main, debug: true })
-		.plugin('./index.js')
-		.bundle()
-		.on('error', function (error) {
-			errors.push(error);
-		})
-		.pipe(es.wait(function (err, actual) {
-			cb(errors, actual.toString());
-		}));
+function run(main, tsifyOpts, cb) {
+	runHelper(main, [], tsifyOpts, cb);
 }
 
-function runLateAdded(main, cb) {
+function runLateAdded(main, tsifyOpts, cb) {
+	runHelper([], main, tsifyOpts, cb);
+}
+
+function runHelper(entries, add, tsifyOpts, cb) {
 	var errors = [];
-	if (!Array.isArray(main))
-		main = [main];
+	var calledBack = false;
 
-	var b = browserify({ debug: true })
-		.plugin('./index.js');
+	if (!Array.isArray(entries))
+		entries = [entries];
+	if (!Array.isArray(add))
+		add = [add];
+	if (!cb) {
+		cb = tsifyOpts;
+		tsifyOpts = {};
+	}
 
-	main.forEach(function (entry) {
+	var b = browserify({ entries: entries, debug: true })
+		.plugin('./index.js', tsifyOpts);
+
+	add.forEach(function (entry) {
 		b.add(entry);
 	});
 
@@ -185,8 +183,69 @@ function runLateAdded(main, cb) {
 			errors.push(error);
 		})
 		.pipe(es.wait(function (err, actual) {
+			if (calledBack)
+				throw new Error('Bundling completed after build timeout expired');
+			calledBack = true;
 			cb(errors, actual.toString());
 		}));
+
+	setTimeout(function () {
+		if (calledBack)
+			return;
+		calledBack = true;
+		cb(errors, null);
+	}, buildTimeout);
+}
+
+function runWatchify(add, tsifyOpts, handlers) {
+	if (!Array.isArray(add))
+		add = [add];
+	if (!handlers) {
+		handlers = tsifyOpts;
+		tsifyOpts = {};
+	}
+
+	var b = watchify(browserify(watchify.args))
+		.plugin('./index.js', tsifyOpts);
+
+	add.forEach(function (entry) {
+		b.add(entry);
+	});
+
+	b.on('update', rebundle);
+	rebundle();
+
+	function rebundle() {
+		var calledBack = false;
+		var errors = [];
+
+		b.bundle()
+			.on('error', function (error) {
+				errors.push(error);
+			})
+			.pipe(es.wait(function (err, actual) {
+				if (calledBack)
+					throw new Error('Bundling completed after build timeout expired');
+				calledBack = true;
+				callNextCallback(errors, actual.toString());
+			}));
+
+		setTimeout(function () {
+			if (calledBack)
+				return;
+			calledBack = true;
+			callNextCallback(errors, null, b);
+		}, buildTimeout);
+	}
+
+	function callNextCallback(errors, actual) {
+		var cb = handlers.shift();
+
+		// hack to wait for Watchify to finish adding any outstanding watchers
+		setTimeout(function () {
+			cb(errors, actual, b);
+		}, 100);
+	}
 }
 
 function expectNoErrors(t, errors) {
@@ -208,7 +267,14 @@ function expectErrors(t, actual, expected) {
 	}
 }
 
+function expectNoOutput(t, actual) {
+	t.equal(actual, null, 'Should have no compiled output');
+}
+
 function expectOutput(t, actual, expectedFile) {
+	t.notEqual(actual, null, 'Should have compiled output');
+	if (actual === null) return;
+
 	var expected = fs.readFileSync(expectedFile).toString();
 	var sourceDir = path.dirname(expectedFile);
 

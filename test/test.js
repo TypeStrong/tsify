@@ -9,6 +9,7 @@ var path = require('path');
 var watchify = require('watchify');
 
 var buildTimeout = 5000;
+var watchInterval = 3000;
 
 // Tests
 
@@ -132,12 +133,10 @@ test('watchify', function (t) {
 		},
 		function (errors, actual) {
 			t.ok(errors.length > 0, 'Should have type errors');
-			errors = [];
 			fs.copySync('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
 		},
 		function (errors, actual) {
 			t.ok(errors.length > 0, 'Should have syntax errors');
-			errors = [];
 			fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
 		},
 		function (errors, actual, b) {
@@ -205,7 +204,7 @@ function runWatchify(add, tsifyOpts, handlers) {
 		tsifyOpts = {};
 	}
 
-	var b = watchify(browserify(watchify.args))
+	var b = watchify(browserify(watchify.args), { poll: watchInterval })
 		.plugin('./index.js', tsifyOpts);
 
 	add.forEach(function (entry) {
@@ -214,6 +213,7 @@ function runWatchify(add, tsifyOpts, handlers) {
 
 	b.on('update', rebundle);
 	rebundle();
+
 
 	function rebundle() {
 		var calledBack = false;
@@ -234,15 +234,14 @@ function runWatchify(add, tsifyOpts, handlers) {
 			if (calledBack)
 				return;
 			calledBack = true;
-			callNextCallback(errors, null, b);
+			callNextCallback(errors, null);
 		}, buildTimeout);
 	}
 
 	function callNextCallback(errors, actual) {
-		var cb = handlers.shift();
-
 		// hack to wait for Watchify to finish adding any outstanding watchers
 		setTimeout(function () {
+			var cb = handlers.shift();
 			cb(errors, actual, b);
 		}, 100);
 	}

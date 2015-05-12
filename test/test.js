@@ -10,42 +10,47 @@ var watchify = require('watchify');
 
 test('no arguments', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		'./test/noArguments/x.ts',
-		'./test/noArguments/expected.js');
+	run('./test/noArguments/x.ts', function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/noArguments/expected.js');
+	});
 });
 
 test('full path includes', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		path.resolve('./test/noArguments/x.ts'),
-		'./test/noArguments/expected.js');
+	run(path.resolve('./test/noArguments/x.ts'), function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/noArguments/expected.js');
+	});
 });
 
 test('non-TS main file', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		'./test/withJsRoot/x.js',
-		'./test/withJsRoot/expected.js');
+	run('./test/withJsRoot/x.js', function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/withJsRoot/expected.js');
+	});
 });
 
 test('with adjacent compiled files', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		'./test/withAdjacentCompiledFiles/x.ts',
-		'./test/withAdjacentCompiledFiles/expected.js');
+	run('./test/withAdjacentCompiledFiles/x.ts', function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/withAdjacentCompiledFiles/expected.js');
+	});
 });
 
 test('with nested dependencies', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		'./test/withNestedDeps/x.ts',
-		'./test/withNestedDeps/expected.js');
+	run('./test/withNestedDeps/x.ts', function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/withNestedDeps/expected.js');
+	});
 });
 
 test('syntax error', function (t) {
 	t.plan(13);
-	run('./test/syntaxError/x.ts', function (errors) {
+	run('./test/syntaxError/x.ts', function (errors, actual) {
 		t.equal(errors.length, 2, 'Should have 2 errors in total');
 		t.equal(errors[0].name, 'TS1005', 'Should have syntax error on first import');
 		t.equal(errors[0].line, 1, 'First error should be on line 1');
@@ -77,29 +82,30 @@ test('type error', function (t) {
 
 test('multiple entry points', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'],
-		'./test/multipleEntryPoints/expected.js');
+	run(['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/multipleEntryPoints/expected.js');
+	});
 });
 
 test('including .d.ts file', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'],
-		'./test/declarationFile/expected.js');
+	run(['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'], function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/declarationFile/expected.js');
+	});
 });
 
 test('including external dependencies', function (t) {
 	t.plan(8);
-	expectSuccess(t,
-		'./test/externalDeps/x.ts',
-		'./test/externalDeps/expected.js');
+	run('./test/externalDeps/x.ts', function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual, './test/externalDeps/expected.js');
+	});
 });
 
 test('late added entries', function (t) {
 	t.plan(8);
-	var expectedFile = './test/noArguments/expected.js';
-	var expected = fs.readFileSync(expectedFile).toString();
 	var errors = [];
 	browserify({ debug: true })
 		.plugin('./index.js')
@@ -109,15 +115,13 @@ test('late added entries', function (t) {
 		.add('./test/noArguments/x.ts')
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
-			t.deepEqual(errors, [], 'Should have no compilation errors');
-			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
+			expectNoErrors(t, errors);
+			expectOutput(t, actual.toString(), './test/noArguments/expected.js');
 		}));
 });
 
 test('late added entries with multiple entry points', function (t) {
 	t.plan(8);
-	var expectedFile = './test/multipleEntryPoints/expected.js';
-	var expected = fs.readFileSync(expectedFile).toString();
 	var errors = [];
 	browserify({ entries: ['./test/multipleEntryPoints/y.ts'], debug: true })
 		.plugin('./index.js')
@@ -127,18 +131,55 @@ test('late added entries with multiple entry points', function (t) {
 		.add('./test/multipleEntryPoints/z.ts')
 		.bundle()
 		.pipe(es.wait(function (err, actual) {
-			t.deepEqual(errors, [], 'Should have no compilation errors');
-			expectCompiledOutput(t, expected, actual.toString(), path.dirname(expectedFile));
+			expectNoErrors(t, errors);
+			expectOutput(t, actual.toString(), './test/multipleEntryPoints/expected.js');
 		}));
 });
 
-function expectSuccess(t, main, expectedFile) {
-	var expected = fs.readFileSync(expectedFile).toString();
-	run(main, function (errors, actual) {
-		t.deepEqual(errors, [], 'Should have no compilation errors');
-		expectCompiledOutput(t, expected, actual, path.dirname(expectedFile));
-	});
-}
+test('watchify', function (t) {
+	var errors = [];
+	var b = watchify(browserify(watchify.args))
+		.plugin('./index.js')
+		.add('./test/watchify/main.ts')
+		.on('update', rebundle);
+
+	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+	var handlers = [
+		function () {
+			t.deepEqual(errors, [], 'Should have no compilation errors');
+			fs.copySync('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
+		},
+		function (err, actual) {
+			t.ok(errors.length > 0, 'Should have type errors');
+			errors = [];
+			fs.copySync('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
+		},
+		function (err, actual) {
+			t.ok(errors.length > 0, 'Should have syntax errors');
+			errors = [];
+			fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+		},
+		function (err, actual) {
+			t.deepEqual(errors, [], 'Should have no compilation errors');
+			b.close();
+			t.end();
+		}
+	];
+
+	rebundle();
+
+	function rebundle() {
+		return b.bundle()
+			.on('error', function (error) {
+				errors.push(error);
+			})
+			.pipe(es.wait(function (err, actual) {
+				// hack to wait for Watchify to finish adding any outstanding watchers
+				setTimeout(handlers.shift(), 100);
+			}));
+	}
+});
+
 
 function run(main, cb) {
 	var errors = [];
@@ -154,6 +195,15 @@ function run(main, cb) {
 		.pipe(es.wait(function (err, actual) {
 			cb(errors, actual.toString());
 		}));
+}
+
+function expectNoErrors(t, errors) {
+	t.deepEqual(errors, [], 'Should have no compilation errors');
+}
+
+function expectOutput(t, actual, expectedFile) {
+	var expected = fs.readFileSync(expectedFile).toString();
+	expectCompiledOutput(t, expected, actual, path.dirname(expectedFile));
 }
 
 function expectCompiledOutput(t, expected, actual, sourceDir) {
@@ -202,47 +252,3 @@ function expectSourcemap(t, expected, actual) {
 	t.equal(actual.mappings, expected.mappings, 'Sourcemap mappings should match');
 	t.deepEqual(actual.sourcesContent, expected.sourcesContent, 'Sourcemap sourcesContent should match');
 }
-
-test('watchify', function (t) {
-	var errors = [];
-	var b = watchify(browserify(watchify.args))
-		.plugin('./index.js')
-		.add('./test/watchify/main.ts')
-		.on('update', rebundle);
-
-	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
-	var handlers = [
-		function () {
-			t.deepEqual(errors, [], 'Should have no compilation errors');
-			fs.copySync('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
-		},
-		function (err, actual) {
-			t.ok(errors.length > 0, 'Should have type errors');
-			errors = [];
-			fs.copySync('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
-		},
-		function (err, actual) {
-			t.ok(errors.length > 0, 'Should have syntax errors');
-			errors = [];
-			fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
-		},
-		function (err, actual) {
-			t.deepEqual(errors, [], 'Should have no compilation errors');
-			b.close();
-			t.end();
-		}
-	];
-
-	rebundle();
-
-	function rebundle() {
-		return b.bundle()
-			.on('error', function (error) {
-				errors.push(error);
-			})
-			.pipe(es.wait(function (err, actual) {
-				// hack to wait for Watchify to finish adding any outstanding watchers
-				setTimeout(handlers.shift(), 100);
-			}));
-	}
-});

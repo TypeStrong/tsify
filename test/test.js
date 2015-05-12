@@ -51,32 +51,19 @@ test('with nested dependencies', function (t) {
 test('syntax error', function (t) {
 	t.plan(13);
 	run('./test/syntaxError/x.ts', function (errors, actual) {
-		t.equal(errors.length, 2, 'Should have 2 errors in total');
-		t.equal(errors[0].name, 'TS1005', 'Should have syntax error on first import');
-		t.equal(errors[0].line, 1, 'First error should be on line 1');
-		t.equal(errors[0].column, 9, 'First error should be on column 9');
-		t.ok(errors[0].message.match(/test\/syntaxError\/x\.ts/), 'First error message should contain file info');
-		t.ok(errors[0].message.match(/\(1,9\)/), 'First error message should contain position info');
-		t.ok(errors[0].message.match(/TS1005/), 'First error message should contain error info');
-		t.equal(errors[1].name, 'TS1005', 'Should have syntax error on second import');
-		t.equal(errors[1].line, 2, 'Second error should be on line 2');
-		t.equal(errors[1].column, 9, 'Second error should be on column 9');
-		t.ok(errors[1].message.match(/test\/syntaxError\/x\.ts/), 'First error message should contain file info');
-		t.ok(errors[1].message.match(/\(2,9\)/), 'Second error message should contain position info');
-		t.ok(errors[1].message.match(/TS1005/), 'Second error message should contain error info');
+		expectErrors(t, errors, [
+			{ name: 'TS1005', line: 1, column: 9, file: 'test/syntaxError/x.ts' },
+			{ name: 'TS1005', line: 2, column: 9, file: 'test/syntaxError/x.ts' }
+		]);
 	});
 });
 
 test('type error', function (t) {
 	t.plan(7);
 	run('./test/typeError/x.ts', function (errors) {
-		t.equal(errors.length, 1, 'Should have 1 error in total');
-		t.equal(errors[0].name, 'TS2345', 'Should have "Argument is not assignable to parameter" error');
-		t.equal(errors[0].line, 4, 'Error should be on line 4');
-		t.equal(errors[0].column, 3, 'Error should be on column 3');
-		t.ok(errors[0].message.match(/test\/typeError\/x\.ts/), 'Error message should contain file info');
-		t.ok(errors[0].message.match(/\(4,3\)/), 'Error message should contain position info');
-		t.ok(errors[0].message.match(/TS2345/), 'Error message should contain error info');
+		expectErrors(t, errors, [
+			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
+		]);
 	});
 });
 
@@ -106,34 +93,18 @@ test('including external dependencies', function (t) {
 
 test('late added entries', function (t) {
 	t.plan(8);
-	var errors = [];
-	browserify({ debug: true })
-		.plugin('./index.js')
-		.on('error', function (error) {
-			errors.push(error);
-		})
-		.add('./test/noArguments/x.ts')
-		.bundle()
-		.pipe(es.wait(function (err, actual) {
-			expectNoErrors(t, errors);
-			expectOutput(t, actual.toString(), './test/noArguments/expected.js');
-		}));
+	runLateAdded('./test/noArguments/x.ts', function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual.toString(), './test/noArguments/expected.js');
+	});
 });
 
 test('late added entries with multiple entry points', function (t) {
 	t.plan(8);
-	var errors = [];
-	browserify({ entries: ['./test/multipleEntryPoints/y.ts'], debug: true })
-		.plugin('./index.js')
-		.on('error', function (error) {
-			errors.push(error);
-		})
-		.add('./test/multipleEntryPoints/z.ts')
-		.bundle()
-		.pipe(es.wait(function (err, actual) {
-			expectNoErrors(t, errors);
-			expectOutput(t, actual.toString(), './test/multipleEntryPoints/expected.js');
-		}));
+	runLateAdded(['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectOutput(t, actual.toString(), './test/multipleEntryPoints/expected.js');
+	});
 });
 
 test('watchify', function (t) {
@@ -197,16 +168,50 @@ function run(main, cb) {
 		}));
 }
 
+function runLateAdded(main, cb) {
+	var errors = [];
+	if (!Array.isArray(main))
+		main = [main];
+
+	var b = browserify({ debug: true })
+		.plugin('./index.js');
+
+	main.forEach(function (entry) {
+		b.add(entry);
+	});
+
+	b.bundle()
+		.on('error', function (error) {
+			errors.push(error);
+		})
+		.pipe(es.wait(function (err, actual) {
+			cb(errors, actual.toString());
+		}));
+}
+
 function expectNoErrors(t, errors) {
 	t.deepEqual(errors, [], 'Should have no compilation errors');
 }
 
-function expectOutput(t, actual, expectedFile) {
-	var expected = fs.readFileSync(expectedFile).toString();
-	expectCompiledOutput(t, expected, actual, path.dirname(expectedFile));
+function expectErrors(t, actual, expected) {
+	t.equal(actual.length, expected.length, 'Should have the correct error count');
+	for (var i = 0; i < actual.length; ++i) {
+		t.equal(actual[i].name, expected[i].name, 'Error #' + i + ' should be of type ' + expected[i].name);
+		t.equal(actual[i].line, expected[i].line, 'Error #' + i + ' should be on line ' + expected[i].line);
+		t.equal(actual[i].column, expected[i].column, 'Error #' + i + ' should be on column ' + expected[i].column);
+		t.ok(actual[i].message.indexOf(expected[i].file) > -1,
+			'Error #' + i + ' message should contain file info');
+		t.ok(actual[i].message.indexOf('(' + expected[i].line + ',' + expected[i].column + ')') > -1,
+			'Error #' + i + ' message should contain position info');
+		t.ok(actual[i].message.indexOf(expected[i].name) > -1,
+			'Error #' + i + ' message should contain error info');
+	}
 }
 
-function expectCompiledOutput(t, expected, actual, sourceDir) {
+function expectOutput(t, actual, expectedFile) {
+	var expected = fs.readFileSync(expectedFile).toString();
+	var sourceDir = path.dirname(expectedFile);
+
 	// fix CRLFs on Windows; the expected output uses LFs
 	actual = actual.replace(/\r\n/g, '\n');
 
@@ -239,8 +244,6 @@ function expectSourcemap(t, expected, actual) {
 		// The following code fixes an odd bug with browserify (out of our control) in which it produces sourcemap paths
 		// that are strangely relative yet technically correct when it's running from within a directory
 		// junction on windows. It does this by resolving out symlinks fully to compare actual relative paths.
-		var path = require("path");
-		var fs = require("fs");
 		var cwd = fs.realpathSync(process.cwd());
 		source = fs.realpathSync(source);
 		source = path.relative(cwd, source);

@@ -50,6 +50,10 @@ Do not emit comments to output.
 
 Specify ECMAScript target version: 'ES3' (default), or 'ES5'
 
+#### --stopOnError
+
+Stop processing output when there are typing errors.
+
 # does this work with...
 
 ### Watchify?
@@ -80,6 +84,7 @@ MIT
 
 # changelog
 
+* 0.10.0 - Added `stopOnError` option and changed default behavior to continue building when there are typing errors.
 * 0.9.0 - Updated to use TypeScript from npm (thanks @hexaglow)
 * 0.8.2 - Updated peerDependency for Browserify to allow any version >= 6.x
 * 0.8.1 - Updated peerDependency for Browserify 9.x

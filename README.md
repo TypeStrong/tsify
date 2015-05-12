@@ -1,6 +1,6 @@
 # tsify
 
-[Browserify](http://browserify.org/) plugin for compiling [TypeScript](http://www.typescriptlang.org/) 1.4
+[Browserify](http://browserify.org/) plugin for compiling [TypeScript](http://www.typescriptlang.org/)
 
 [![NPM version](https://img.shields.io/npm/v/tsify.svg)](https://www.npmjs.com/package/tsify)
 [![Build status](https://img.shields.io/travis/smrq/tsify.svg)](http://travis-ci.org/smrq/tsify)

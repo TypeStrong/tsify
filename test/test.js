@@ -8,7 +8,7 @@ var fs = require('fs-extra');
 var path = require('path');
 var watchify = require('watchify');
 
-var buildTimeout = 1000;
+var buildTimeout = 5000;
 
 // Tests
 

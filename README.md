@@ -19,8 +19,8 @@ $ browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js
 ### Browserify API:
 
 ``` js
-var browserify = require("browserify");
-var tsify = require("tsify");
+var browserify = require('browserify');
+var tsify = require('tsify');
 
 browserify()
     .add('main.ts')
@@ -35,12 +35,15 @@ Just plain ol' [npm](https://npmjs.org/) installation:
 
 ### 1. Install browserify
 ```sh
-npm install -g browserify
+npm install browserify
 ```
+
 ### 2. Install tsify
 ``` sh
 npm install tsify
 ```
+
+For use on the command line, use the flag `npm install -g`.
 
 # Options
 

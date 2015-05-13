@@ -8,32 +8,41 @@
 [![devDependency Status](https://img.shields.io/david/dev/smrq/tsify.svg)](https://david-dm.org/smrq/tsify#info=devDependencies)
 [![peerDependency Status](https://img.shields.io/david/peer/smrq/tsify.svg)](https://david-dm.org/smrq/tsify#info=peerDependencies)
 
-# example usage
+# Example Usage
 
-On the command line:
+### Command line:
 
 ``` sh
 $ browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js
 ```
 
-With the Browserify API:
+### Browserify API:
 
 ``` js
+var browserify = require("browserify");
+var tsify = require("tsify");
+
 browserify()
     .add('main.ts')
     .plugin('tsify', { noImplicitAny: true })
-    .bundle();
+    .bundle()
+    .pipe(process.stdout);
 ```
 
-# installation
+# Installation
 
 Just plain ol' [npm](https://npmjs.org/) installation:
 
+### 1. Install browserify
+```sh
+npm install -g browserify
+```
+### 2. Install tsify
 ``` sh
 npm install tsify
 ```
 
-# options
+# Options
 
 * **tsify** will generate sourcemaps if the `--debug` option is set on Browserify.
 * **tsify** supports the following options from the TypeScript compiler:
@@ -72,17 +81,17 @@ Use [grunt-browserify](https://github.com/jmreidy/grunt-browserify) and you shou
 
 The inlined sourcemaps that Browserify generates [may not be readable by IE 11](//github.com/smrq/tsify/issues/19) for debugging purposes.  This is easy to fix by adding [exorcist](//github.com/thlorenz/exorcist) to your build workflow after Browserify.
 
-# why a plugin?
+# Why a plugin?
 
 There are several TypeScript compilation transforms available on npm, all with various issues.  The TypeScript compiler automatically performs dependency resolution on module imports, much like Browserify itself.  Browserify transforms are not flexible enough to deal with multiple file outputs given a single file input, which means that any working TypeScript compilation transform either skips the resolution step (which is necessary for complete type checking) or performs multiple compilations of source files further down the dependency graph.
 
 **tsify** avoids this problem by using the power of plugins to perform a single compilation of the TypeScript source up-front, using Browserify to glue together the resulting files.
 
-# license
+# License
 
 MIT
 
-# changelog
+# Changelog
 
 * 0.10.0 - Added `stopOnError` option and changed default behavior to continue building when there are typing errors.
 * 0.9.0 - Updated to use TypeScript from npm (thanks @hexaglow)

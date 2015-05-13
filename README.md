@@ -96,6 +96,7 @@ MIT
 
 # Changelog
 
+* 0.10.1 - Fixed display of nested error messages, e.g. many typing errors.
 * 0.10.0 - Added `stopOnError` option and changed default behavior to continue building when there are typing errors.
 * 0.9.0 - Updated to use TypeScript from npm (thanks @hexaglow)
 * 0.8.2 - Updated peerDependency for Browserify to allow any version >= 6.x

@@ -60,7 +60,7 @@ Do not emit comments to output.
 
 #### --target=*version*
 
-Specify ECMAScript target version: 'ES3' (default), or 'ES5'
+Specify ECMAScript target version: 'ES3' (default), 'ES5', or 'ES6'
 
 #### --stopOnError
 

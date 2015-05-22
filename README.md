@@ -66,6 +66,10 @@ Specify ECMAScript target version: 'ES3' (default), 'ES5', or 'ES6'
 
 Stop processing output when there are typing errors.
 
+#### --typescript
+
+Possibility for passing an own instance of the TypeScript compiler (forked version etc.).
+
 # does this work with...
 
 ### Watchify?

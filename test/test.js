@@ -23,7 +23,7 @@ test('no arguments', function (t) {
 			'222'
 		]);
 		expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
-		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
 		t.end();
 	});
@@ -37,7 +37,7 @@ test('late added entries', function (t) {
 			'222'
 		]);
 		expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
-		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
 		t.end();
 	});
@@ -51,7 +51,7 @@ test('full path includes', function (t) {
 			'222'
 		]);
 		expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
-		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
 		t.end();
 	});
@@ -65,7 +65,7 @@ test('non-TS main file', function (t) {
 			'222'
 		]);
 		expectMappedToken(t, 'test/withJsRoot/x.js', actual, 'y(\'hello world\')');
-		expectMappedToken(t, 'test/withJsRoot/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/withJsRoot/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/withJsRoot/z.ts', actual, '111');
 		t.end();
 	});
@@ -79,7 +79,7 @@ test('with adjacent compiled files', function (t) {
 			'222'
 		]);
 		expectMappedToken(t, 'test/withAdjacentCompiledFiles/x.ts', actual, '\'hello world\'');
-		expectMappedToken(t, 'test/withAdjacentCompiledFiles/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/withAdjacentCompiledFiles/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/withAdjacentCompiledFiles/z.ts', actual, '111');
 		t.end();
 	});
@@ -93,7 +93,7 @@ test('with nested dependencies', function (t) {
 			'222'
 		]);
 		expectMappedToken(t, 'test/withNestedDeps/x.ts', actual, '\'hello world\'');
-		expectMappedToken(t, 'test/withNestedDeps/nested/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/withNestedDeps/nested/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/withNestedDeps/nested/twice/z.ts', actual, '111');
 		t.end();
 	});
@@ -120,14 +120,14 @@ test('type error', function (t) {
 			222
 		]);
 		expectMappedToken(t, 'test/typeError/x.ts', actual, '\'hello world\'');
-		expectMappedToken(t, 'test/typeError/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/typeError/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/typeError/z.ts', actual, '111');
 		t.end();
 	});
 });
 
-test('type error with stopOnError', function (t) {
-	run('./test/typeError/x.ts', { stopOnError: true }, function (errors, actual) {
+test('type error with noEmitOnError', function (t) {
+	run('./test/typeError/x.ts', { noEmitOnError: true }, function (errors, actual) {
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
 		]);
@@ -147,7 +147,7 @@ test('multiple entry points', function (t) {
 		]);
 		expectMappedToken(t, 'test/multipleEntryPoints/x1.ts', actual, '\'hello world\'');
 		expectMappedToken(t, 'test/multipleEntryPoints/x2.ts', actual, '\'goodbye world\'');
-		expectMappedToken(t, 'test/multipleEntryPoints/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/multipleEntryPoints/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/multipleEntryPoints/z.ts', actual, '111');
 		t.end();
 	});
@@ -164,7 +164,7 @@ test('late added entries with multiple entry points', function (t) {
 		]);
 		expectMappedToken(t, 'test/multipleEntryPoints/x1.ts', actual, '\'hello world\'');
 		expectMappedToken(t, 'test/multipleEntryPoints/x2.ts', actual, '\'goodbye world\'');
-		expectMappedToken(t, 'test/multipleEntryPoints/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/multipleEntryPoints/y.ts', actual, 'console.log(message)');
 		expectMappedToken(t, 'test/multipleEntryPoints/z.ts', actual, '111');
 		t.end();
 	});

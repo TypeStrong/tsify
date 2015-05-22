@@ -1,4 +1,3 @@
-export = fn;
-function fn(message: string) {
+export default function fn(message: string) {
 	console.log(message);
 }

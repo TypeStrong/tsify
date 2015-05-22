@@ -38,6 +38,7 @@
     "jshint": "^2.7.0",
     "jshint-stylish": "^1.0.2",
     "node-foo": "^0.2.3",
+    "source-map": "^0.4.2",
     "tape": "^4.0.0",
     "test-peer-range": "^1.0.1",
     "watchify": "^3.2.1"

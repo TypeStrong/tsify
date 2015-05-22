@@ -7,7 +7,9 @@ var es = require('event-stream');
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs-extra');
 var path = require('path');
+var sm = require('source-map');
 var watchify = require('watchify');
+var vm = require('vm');
 
 var buildTimeout = 5000;
 
@@ -16,7 +18,27 @@ var buildTimeout = 5000;
 test('no arguments', function (t) {
 	run('./test/noArguments/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/noArguments/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
+		t.end();
+	});
+});
+
+test('late added entries', function (t) {
+	runLateAdded('./test/noArguments/x.ts', function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -24,7 +46,13 @@ test('no arguments', function (t) {
 test('full path includes', function (t) {
 	run(path.resolve('./test/noArguments/x.ts'), function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/noArguments/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/noArguments/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -32,7 +60,13 @@ test('full path includes', function (t) {
 test('non-TS main file', function (t) {
 	run('./test/withJsRoot/x.js', function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/withJsRoot/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/withJsRoot/x.js', actual, 'y(\'hello world\')');
+		expectMappedToken(t, 'test/withJsRoot/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/withJsRoot/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -40,7 +74,13 @@ test('non-TS main file', function (t) {
 test('with adjacent compiled files', function (t) {
 	run('./test/withAdjacentCompiledFiles/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/withAdjacentCompiledFiles/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/withAdjacentCompiledFiles/x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/withAdjacentCompiledFiles/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/withAdjacentCompiledFiles/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -48,7 +88,13 @@ test('with adjacent compiled files', function (t) {
 test('with nested dependencies', function (t) {
 	run('./test/withNestedDeps/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/withNestedDeps/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/withNestedDeps/x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/withNestedDeps/nested/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/withNestedDeps/nested/twice/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -69,7 +115,13 @@ test('type error', function (t) {
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
 		]);
-		expectOutput(t, actual, './test/typeError/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			222
+		]);
+		expectMappedToken(t, 'test/typeError/x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/typeError/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/typeError/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -85,9 +137,35 @@ test('type error with stopOnError', function (t) {
 });
 
 test('multiple entry points', function (t) {
-	run(['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], function (errors, actual) {
+	run(['./test/multipleEntryPoints/x1.ts', './test/multipleEntryPoints/x2.ts'], function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/multipleEntryPoints/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222',
+			'goodbye world',
+			'555'
+		]);
+		expectMappedToken(t, 'test/multipleEntryPoints/x1.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/multipleEntryPoints/x2.ts', actual, '\'goodbye world\'');
+		expectMappedToken(t, 'test/multipleEntryPoints/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/multipleEntryPoints/z.ts', actual, '111');
+		t.end();
+	});
+});
+
+test('late added entries with multiple entry points', function (t) {
+	runLateAdded(['./test/multipleEntryPoints/x1.ts', './test/multipleEntryPoints/x2.ts'], function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222',
+			'goodbye world',
+			'555'
+		]);
+		expectMappedToken(t, 'test/multipleEntryPoints/x1.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/multipleEntryPoints/x2.ts', actual, '\'goodbye world\'');
+		expectMappedToken(t, 'test/multipleEntryPoints/y.ts', actual, 'function fn(message');
+		expectMappedToken(t, 'test/multipleEntryPoints/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -95,7 +173,11 @@ test('multiple entry points', function (t) {
 test('including .d.ts file', function (t) {
 	run(['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'], function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/declarationFile/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'Doctor',
+			'Seuss'
+		]);
+		expectMappedToken(t, 'test/declarationFile/x.ts', actual, 'x.thing1');
 		t.end();
 	});
 });
@@ -103,23 +185,12 @@ test('including .d.ts file', function (t) {
 test('including external dependencies', function (t) {
 	run('./test/externalDeps/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
-		expectOutput(t, actual, './test/externalDeps/expected.js');
-		t.end();
-	});
-});
-
-test('late added entries', function (t) {
-	runLateAdded('./test/noArguments/x.ts', function (errors, actual) {
-		expectNoErrors(t, errors);
-		expectOutput(t, actual.toString(), './test/noArguments/expected.js');
-		t.end();
-	});
-});
-
-test('late added entries with multiple entry points', function (t) {
-	runLateAdded(['./test/multipleEntryPoints/y.ts', './test/multipleEntryPoints/z.ts'], function (errors, actual) {
-		expectNoErrors(t, errors);
-		expectOutput(t, actual.toString(), './test/multipleEntryPoints/expected.js');
+		expectConsoleOutputFromScript(t, actual, [
+			'node-foo aaa:this',
+			'node-foo bbb:is a',
+			'node-foo ccc:test'
+		]);
+		expectMappedToken(t, 'test/externalDeps/x.ts', actual, '\'is a\'');
 		t.end();
 	});
 });
@@ -278,53 +349,37 @@ function expectNoOutput(t, actual) {
 	t.equal(actual, null, 'Should have no compiled output');
 }
 
-function expectOutput(t, actual, expectedFile) {
-	t.notEqual(actual, null, 'Should have compiled output');
-	if (actual === null) return;
-
-	var expected = fs.readFileSync(expectedFile).toString();
-	var sourceDir = path.dirname(expectedFile);
-
-	// fix CRLFs on Windows; the expected output uses LFs
-	actual = actual.replace(/\r\n/g, '\n');
-
-	expectSource(t,
-		convert.removeMapFileComments(expected),
-		convert.removeComments(actual));
-	expectSourcemap(t,
-		convert.fromMapFileSource(expected, sourceDir).sourcemap,
-		convert.fromSource(actual).sourcemap);
+function expectConsoleOutputFromScript(t, src, expected) {
+	var actual = [];
+	var sandbox = { console: { log: function (str) { actual.push(str); }}};
+	vm.runInNewContext(src, sandbox);
+	t.deepEqual(actual, expected, 'Should have expected console.log output');
 }
 
-function expectSource(t, expected, actual) {
-	if (expected === actual) {
-		t.pass('Compiled output should match expected output');
-	} else {
-		console.log(ansidiff.lines(visibleNewlines(expected), visibleNewlines(actual)));
-		t.fail('Compiled output should match expected output');
+function expectMappedToken(t, srcFile, compiled, token) {
+	var src = fs.readFileSync(srcFile, 'utf-8');
+	var compiledPosition = indexToLineAndColumn(compiled, compiled.indexOf(token));
+	var expectedSrcPosition = indexToLineAndColumn(src, src.indexOf(token));
+	expectedSrcPosition.name = null;
+	expectedSrcPosition.source = srcFile;
+
+	var map = convert.fromSource(compiled).toObject();
+	var smc = new sm.SourceMapConsumer(map);
+	var actualSrcPosition = smc.originalPositionFor(compiledPosition);
+
+	t.deepEqual(actualSrcPosition, expectedSrcPosition, 'Token "' + token + '" should be mapped correctly');
+}
+
+function countLinesUntil(str, index) {
+	var count = 1;
+	while ((index = str.lastIndexOf('\n', index)) !== -1) {
+		++count;
+		--index;
 	}
+	return count;
 }
 
-function visibleNewlines(str) {
-	return str.replace(/\r/g, '\\r\r')
-		.replace(/\n/g, '\\n\n');
-}
-
-function expectSourcemap(t, expected, actual) {
-	t.equal(actual.version, expected.version, 'Sourcemap version should match');
-	t.equal(actual.file, expected.file, 'Sourcemap file should match');
-	t.deepEqual(actual.sources.map(function (source) {
-		// The following code fixes an odd bug with browserify (out of our control) in which it produces sourcemap paths
-		// that are strangely relative yet technically correct when it's running from within a directory
-		// junction on windows. It does this by resolving out symlinks fully to compare actual relative paths.
-		var cwd = fs.realpathSync(process.cwd());
-		source = fs.realpathSync(source);
-		source = path.relative(cwd, source);
-
-		// fix slash direction on Windows
-		return source.replace(/\\/g, '/');
-	}), expected.sources, 'Sourcemap sources should match');
-	t.deepEqual(actual.names, expected.names, 'Sourcemap names should match');
-	t.equal(actual.mappings, expected.mappings, 'Sourcemap mappings should match');
-	t.deepEqual(actual.sourcesContent, expected.sourcesContent, 'Sourcemap sourcesContent should match');
+function indexToLineAndColumn(src, index) {
+	var indexOfLine = src.lastIndexOf('\n', index-1) + 1;
+	return { line: countLinesUntil(src, indexOfLine), column: index - indexOfLine };
 }

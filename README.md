@@ -48,23 +48,9 @@ For use on the command line, use the flag `npm install -g`.
 # Options
 
 * **tsify** will generate sourcemaps if the `--debug` option is set on Browserify.
-* **tsify** supports the following options from the TypeScript compiler:
-
-#### --noImplicitAny
-
-Warn on expressions and declarations with an implied `any` type.
-
-#### --removeComments
-
-Do not emit comments to output.
-
-#### --target=*version*
-
-Specify ECMAScript target version: 'ES3' (default), 'ES5', or 'ES6'
-
-#### --stopOnError
-
-Stop processing output when there are typing errors.
+* **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
+	* `-d, --declaration` - See [tsify#15](https://github.com/smrq/tsify/issues/15)
+	* `-m, --module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
 
 # does this work with...
 
@@ -74,7 +60,7 @@ Yes!  **tsify** can do incremental compilation using [watchify](//github.com/sub
 
 ### Gulp?
 
-No problem.  See the Gulp recipes on using [browserify](//github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md) and [watchify](//github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md), and add **tsify** as a plugin as indicated in the documentation above.
+No problem.  See the Gulp recipes on using [browserify](https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-uglify-sourcemap.md) and [watchify](https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md), and add **tsify** as a plugin as indicated in the documentation above.
 
 ### Grunt?
 
@@ -96,6 +82,7 @@ MIT
 
 # Changelog
 
+* 0.11.0 - Altered behavior to pass through all compiler options to tsc by default.
 * 0.10.2 - Fixed output of global error messages.  Fixed code generation in ES6 mode.
 * 0.10.1 - Fixed display of nested error messages, e.g. many typing errors.
 * 0.10.0 - Added `stopOnError` option and changed default behavior to continue building when there are typing errors.

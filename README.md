@@ -60,7 +60,7 @@ Do not emit comments to output.
 
 #### --target=*version*
 
-Specify ECMAScript target version: 'ES3' (default), or 'ES5'
+Specify ECMAScript target version: 'ES3' (default), 'ES5', or 'ES6'
 
 #### --stopOnError
 
@@ -96,6 +96,7 @@ MIT
 
 # Changelog
 
+* 0.10.2 - Fixed output of global error messages.  Fixed code generation in ES6 mode.
 * 0.10.1 - Fixed display of nested error messages, e.g. many typing errors.
 * 0.10.0 - Added `stopOnError` option and changed default behavior to continue building when there are typing errors.
 * 0.9.0 - Updated to use TypeScript from npm (thanks @hexaglow)

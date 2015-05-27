@@ -1,6 +1,5 @@
 var test = require('tape');
 
-var ansidiff = require('ansidiff');
 var browserify = require('browserify');
 var convert = require('convert-source-map');
 var es = require('event-stream');
@@ -10,6 +9,8 @@ var path = require('path');
 var sm = require('source-map');
 var watchify = require('watchify');
 var vm = require('vm');
+
+var tsify = require('..');
 
 var buildTimeout = 5000;
 
@@ -221,6 +222,16 @@ test('watchify', function (t) {
 	]);
 });
 
+test('with tsconfig.json', function (t) {
+	process.chdir('./test/tsconfig');
+	run('./x.ts', { noEmitOnError: false }, function (errors, actual) {
+		expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'x.ts' }]);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
 // Test helpers
 
 function run(main, tsifyOpts, cb) {
@@ -245,7 +256,7 @@ function runHelper(entries, add, tsifyOpts, cb) {
 	}
 
 	var b = browserify({ entries: entries, debug: true })
-		.plugin('./index.js', tsifyOpts);
+		.plugin(tsify, tsifyOpts);
 
 	add.forEach(function (entry) {
 		b.add(entry);
@@ -282,8 +293,8 @@ function runWatchify(add, tsifyOpts, handlers) {
 	watcher.close = function () {};
 
 	var b = watchify(browserify(watchify.args));
-	b._watcher = function (file, opts) { return watcher; };
-	b.plugin('./index.js', tsifyOpts);
+	b._watcher = function () { return watcher; };
+	b.plugin(tsify, tsifyOpts);
 	add.forEach(function (entry) {
 		b.add(entry);
 	});
@@ -350,6 +361,8 @@ function expectNoOutput(t, actual) {
 }
 
 function expectConsoleOutputFromScript(t, src, expected) {
+	t.notEqual(src, null, 'Should have compiled output');
+
 	var actual = [];
 	var sandbox = { console: { log: function (str) { actual.push(str); }}};
 	vm.runInNewContext(src, sandbox);

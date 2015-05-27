@@ -82,17 +82,18 @@ MIT
 
 # Changelog
 
+* 0.11.1 - Added `tsconfig.json` support.
 * 0.11.0 - Altered behavior to pass through all compiler options to tsc by default.
 * 0.10.2 - Fixed output of global error messages.  Fixed code generation in ES6 mode.
 * 0.10.1 - Fixed display of nested error messages, e.g. many typing errors.
 * 0.10.0 - Added `stopOnError` option and changed default behavior to continue building when there are typing errors.
-* 0.9.0 - Updated to use TypeScript from npm (thanks @hexaglow)
-* 0.8.2 - Updated peerDependency for Browserify to allow any version >= 6.x
-* 0.8.1 - Updated peerDependency for Browserify 9.x
+* 0.9.0 - Updated to use TypeScript from npm (thanks @hexaglow!)
+* 0.8.2 - Updated peerDependency for Browserify to allow any version >= 6.x.
+* 0.8.1 - Updated peerDependency for Browserify 9.x.
 * 0.8.0 - Updated to TypeScript 1.4.1.
-* 0.7.1 - Updated peerDependency for Browserify 8.x
-* 0.7.0 - Updated error handling for compatibility with Watchify
-* 0.6.5 - Updated peerDependency for Browserify 7.x
+* 0.7.1 - Updated peerDependency for Browserify 8.x.
+* 0.7.0 - Updated error handling for compatibility with Watchify.
+* 0.6.5 - Updated peerDependency for Browserify 7.x.
 * 0.6.4 - Included richer file position information in syntax error messages.
 * 0.6.3 - Updated to TypeScript 1.3.
 * 0.6.2 - Included empty *.d.ts compiled files in bundle for Karma compatibility.

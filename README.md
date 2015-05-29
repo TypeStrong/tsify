@@ -51,6 +51,8 @@ For use on the command line, use the flag `npm install -g`.
 * **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
 	* `-d, --declaration` - See [tsify#15](https://github.com/smrq/tsify/issues/15)
 	* `-m, --module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
+	* `--out` - Use Browserify's file output options instead.
+	* `--outDir` - Use Browserify's file output options instead.
 
 # does this work with...
 
@@ -82,6 +84,7 @@ MIT
 
 # Changelog
 
+* 0.11.2 - Blacklisted `--out` and `--outDir` compiler options.
 * 0.11.1 - Added `tsconfig.json` support.
 * 0.11.0 - Altered behavior to pass through all compiler options to tsc by default.
 * 0.10.2 - Fixed output of global error messages.  Fixed code generation in ES6 mode.

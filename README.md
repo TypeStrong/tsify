@@ -10,12 +10,6 @@
 
 # Example Usage
 
-### Command line:
-
-``` sh
-$ browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js
-```
-
 ### Browserify API:
 
 ``` js
@@ -26,8 +20,17 @@ browserify()
     .add('main.ts')
     .plugin('tsify', { noImplicitAny: true })
     .bundle()
+    .on('error', function (error) { console.error(error.toString()); })
     .pipe(process.stdout);
 ```
+
+### Command line:
+
+``` sh
+$ browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js
+```
+
+Note that when using the Browserify CLI, compilation will always halt on the first error encountered, unlike the regular TypeScript CLI.  This behavior can be overridden in the API, as shown in the API example.
 
 # Installation
 

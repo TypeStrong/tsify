@@ -4,9 +4,9 @@
   "description": "Browserify plugin for compiling Typescript",
   "main": "index.js",
   "scripts": {
+    "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js .",
     "test": "test-peer-range browserify",
-    "test-main": "node test/test.js",
-    "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js ."
+    "test-main": "node test/test.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "debuglog": "^1.0.1",
     "lodash": "^3.8.0",
     "through2": "^0.6.5",
-    "typescript": "^1.5.0-beta"
+    "typescript": "^1.5.3"
   },
   "devDependencies": {
     "browserify": "^10.1.3",

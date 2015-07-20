@@ -87,6 +87,7 @@ MIT
 
 # Changelog
 
+* 0.11.3 - Updated to TypeScript 1.5.
 * 0.11.2 - Blacklisted `--out` and `--outDir` compiler options.
 * 0.11.1 - Added `tsconfig.json` support.
 * 0.11.0 - Altered behavior to pass through all compiler options to tsc by default.

@@ -1,10 +1,12 @@
 var test = require('tape');
 
+var _ = require('lodash');
 var browserify = require('browserify');
 var convert = require('convert-source-map');
 var es = require('event-stream');
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs-extra');
+var os = require('os');
 var path = require('path');
 var sm = require('source-map');
 var watchify = require('watchify');
@@ -231,6 +233,28 @@ test('with tsconfig.json', function (t) {
 		t.end();
 	});
 });
+
+test('with custom compiler', function (t) {
+	var ts = _.clone(require('typescript'));
+
+	var oldCreateSourceFile = ts.createSourceFile;
+	ts.createSourceFile = function (filename, text, languageVersion, version) {
+		if (/x\.ts/.test(filename)) {
+			text = 'console.log("Custom compiler was used");' + os.EOL + text;
+		}
+		return oldCreateSourceFile.call(ts, filename, text, languageVersion, version);
+	}
+
+	run('./test/noArguments/x.ts', { typescript: ts }, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'Custom compiler was used',
+			'hello world',
+			'222'
+		]);
+		t.end();
+	});
+})
 
 // Test helpers
 

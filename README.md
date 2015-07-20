@@ -54,10 +54,20 @@ For use on the command line, use the flag `npm install -g`.
 * **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
 	* `-d, --declaration` - See [tsify#15](https://github.com/smrq/tsify/issues/15)
 	* `-m, --module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
-	* `--out` - Use Browserify's file output options instead.
-	* `--outDir` - Use Browserify's file output options instead.
+	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
+* **tsify** supports the following extra options:
+	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  When using the API you can either pass in the name of the alternative compiler or a reference to the compiler.
 
 # does this work with...
+
+### tsconfig.json
+
+tsify will automatically read options from `tsconfig.json`.  However, some options from this file will be ignored:
+
+* `compilerOptions.declaration` - See [tsify#15](https://github.com/smrq/tsify/issues/15)
+* `compilerOptions.module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
+* `compilerOptions.out` and `compilerOptions.outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
+* `files` - Use Browserify's file input options instead.  This is necessary because Browserify needs to know which file(s) are the entry points to your program.
 
 ### Watchify?
 
@@ -87,6 +97,7 @@ MIT
 
 # Changelog
 
+* 0.11.4 - Added `--typescript` option.
 * 0.11.3 - Updated to TypeScript 1.5.
 * 0.11.2 - Blacklisted `--out` and `--outDir` compiler options.
 * 0.11.1 - Added `tsconfig.json` support.

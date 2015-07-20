@@ -1,8 +1,13 @@
-var Tsifier = require('./lib/Tsifier');
+var _ = require('lodash');
 var through = require('through2');
 
 function tsify(b, opts) {
+	var ts = opts.typescript || require('typescript');
+	if (_.isString(ts)) { ts = require(ts); }
+
+	var Tsifier = require('./lib/Tsifier')(ts);
 	var tsifier = new Tsifier(opts);
+
 	tsifier.on('error', function (error) {
 		b.pipeline.emit('error', error);
 	});

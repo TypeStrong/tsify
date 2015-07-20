@@ -9,3 +9,4 @@ deploy:
   on:
     tags: true
     all_branches: true
+sudo: false

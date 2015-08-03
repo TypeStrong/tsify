@@ -97,7 +97,8 @@ MIT
 
 # Changelog
 
-* 0.11.5 - Fixed emit of `file` event to trigger watchify even when there are fatal compilation errors
+* 0.11.6 - Updated dependencies and devDependencies to latest.
+* 0.11.5 - Fixed emit of `file` event to trigger watchify even when there are fatal compilation errors.
 * 0.11.4 - Added `--typescript` option.
 * 0.11.3 - Updated to TypeScript 1.5.
 * 0.11.2 - Blacklisted `--out` and `--outDir` compiler options.

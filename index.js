@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _       = require('lodash');
 var through = require('through2');
 
 function tsify(b, opts) {
@@ -11,8 +11,8 @@ function tsify(b, opts) {
 	tsifier.on('error', function (error) {
 		b.pipeline.emit('error', error);
 	});
-	tsifier.on('file', function (file) {
-		b.emit('file', file);
+	tsifier.on('file', function (file, id) {
+		b.emit('file', file, id);
 	});
 
 	setupPipeline();
@@ -27,7 +27,6 @@ function tsify(b, opts) {
 			b._extensions.unshift('.ts');
 
 		b.pipeline.get('record').push(gatherEntryPoints());
-		b.pipeline.get('deps').push(emitFiles());
 	}
 
 	function gatherEntryPoints() {
@@ -45,21 +44,6 @@ function tsify(b, opts) {
 			tsifier.generateCache(rows.map(function (row) { return row.file || row.id; }));
 			rows.forEach(function (row) { self.push(row); });
 			self.push(null);
-			next();
-		}
-	}
-
-	function emitFiles() {
-		return through.obj(transform, flush);
-
-		function transform(row, enc, next) {
-			this.push(row);
-			next();
-		}
-
-		function flush(next) {
-			this.push(null);
-			tsifier.emitFiles();
 			next();
 		}
 	}

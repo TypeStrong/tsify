@@ -60,7 +60,7 @@ For use on the command line, use the flag `npm install -g`.
 
 # does this work with...
 
-### tsconfig.json
+### tsconfig.json?
 
 tsify will automatically read options from `tsconfig.json`.  However, some options from this file will be ignored:
 

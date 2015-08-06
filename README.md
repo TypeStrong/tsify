@@ -97,6 +97,7 @@ MIT
 
 # Changelog
 
+* 0.11.7 - Added `*.tsx` to the regex determining whether to run a file through the TypeScript compiler.
 * 0.11.6 - Updated dependencies and devDependencies to latest.
 * 0.11.5 - Fixed emit of `file` event to trigger watchify even when there are fatal compilation errors.
 * 0.11.4 - Added `--typescript` option.

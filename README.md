@@ -97,6 +97,7 @@ MIT
 
 # Changelog
 
+* 0.11.8 - Handled JSX output from the TypeScript compiler to support `preserve`.
 * 0.11.7 - Added `*.tsx` to the regex determining whether to run a file through the TypeScript compiler.
 * 0.11.6 - Updated dependencies and devDependencies to latest.
 * 0.11.5 - Fixed emit of `file` event to trigger watchify even when there are fatal compilation errors.

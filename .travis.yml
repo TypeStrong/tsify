@@ -5,7 +5,7 @@ deploy:
   provider: npm
   email: smr.kyu@gmail.com
   api_key:
-    secure: XfTks4951HmwbKJ4sFeDJg1G4aw9yr2IVkSW0FZTIMv96FKo1LmNoAeon5lO+BXXqqpSdKr2P/has3nDQz5QB/VJrE5b8NPxFq2OITlPTN6Zor3Py1RFq65swUuKRBOK2y0fpKGZ/PIhv/8MF21Za8OIRQR8a7hnjmfkSOfZ4rM=
+    secure: JF6/Vg2m1OpPqOVWhj870leTCCCz9vtjOxp6ncFf06iZ5Dn9oenoC6eJ8xJ5VcdO648kyQPBKzxqQbwJuN+DqEIXzDjzlXp3xiEAJhxzQ5iS6S7JhDRTKJYe2QKPApNwL/LJdK56ciJE6aOevlO37Xdy4LVemd+jQIay0nTzlm4=
   on:
     tags: true
     all_branches: true

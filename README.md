@@ -97,6 +97,7 @@ MIT
 
 # Changelog
 
+* 0.11.10 - Updated resolution of `lib.d.ts` to support TypeScript 1.6 and to work with the `--typescript` option.
 * 0.11.9 - Fixed dumb error.
 * 0.11.8 - Handled JSX output from the TypeScript compiler to support `preserve`.
 * 0.11.7 - Added `*.tsx` to the regex determining whether to run a file through the TypeScript compiler.

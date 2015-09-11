@@ -1,4 +1,5 @@
 var _       = require('lodash');
+var fs      = require('fs');
 var through = require('through2');
 
 function tsify(b, opts) {
@@ -40,8 +41,12 @@ function tsify(b, opts) {
 
 		function flush(next) {
 			var self = this;
+			var entries = rows
+				.filter(function (row) { return row.entry; })
+				.map(function (row) { return row.file || row.id; })
+				.map(function (file) { return fs.realpathSync(file) });
 			tsifier.reset();
-			tsifier.generateCache(rows.map(function (row) { return row.file || row.id; }));
+			tsifier.generateCache(entries);
 			rows.forEach(function (row) { self.push(row); });
 			self.push(null);
 			next();

@@ -97,6 +97,7 @@ MIT
 
 # Changelog
 
+* 0.11.12 - Fixed compilation when the current working directory is a symlink.
 * 0.11.11 - Updated compiler host to support current TypeScript nightly.
 * 0.11.10 - Updated resolution of `lib.d.ts` to support TypeScript 1.6 and to work with the `--typescript` option.
 * 0.11.9 - Fixed dumb error.

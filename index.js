@@ -42,8 +42,8 @@ function tsify(b, opts) {
 		function flush(next) {
 			var self = this;
 			var entries = rows
-				.filter(function (row) { return row.entry; })
 				.map(function (row) { return row.file || row.id; })
+				.filter(function (file) { return file; })
 				.map(function (file) { return fs.realpathSync(file) });
 			tsifier.reset();
 			tsifier.generateCache(entries);

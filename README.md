@@ -97,6 +97,7 @@ MIT
 
 # Changelog
 
+* 0.11.15 - Added `*.tsx` to Browserify's list of extensions if `--jsx` is set (with priority *.ts > *.tsx > *.js).
 * 0.11.14 - Override sourcemap settings with `--inlineSourceMap` and `--inlineSources` (because that's what Browserify expects).
 * 0.11.13 - Fixed bug introduced in last change where non-entry point files were erroneously being excluded from the build.
 * 0.11.12 - Fixed compilation when the current working directory is a symlink.

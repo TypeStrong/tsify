@@ -24,6 +24,9 @@ function tsify(b, opts) {
 	});
 
 	function setupPipeline() {
+		if (opts.jsx && b._extensions.indexOf('.tsx') === -1)
+			b._extensions.unshift('.tsx');
+
 		if (b._extensions.indexOf('.ts') === -1)
 			b._extensions.unshift('.ts');
 

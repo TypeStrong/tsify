@@ -198,6 +198,23 @@ test('including external dependencies', function (t) {
 	});
 });
 
+test('tsx', function (t) {
+	var ts = require('typescript');
+	if (!ts.isTsx) {
+		t.comment('tsx not supported in this version of TypeScript: ' + ts.version);
+		return t.end();
+	}
+
+	run('./test/tsx/main.ts', { jsx: 'react' }, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'div with contents: This is a cool component'
+		]);
+		expectMappedToken(t, 'test/tsx/CoolComponent.tsx', actual, 'div');
+		t.end();
+	});
+});
+
 test('watchify', function (t) {
 	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
 	runWatchify('./test/watchify/main.ts', [

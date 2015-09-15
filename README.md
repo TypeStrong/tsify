@@ -97,6 +97,7 @@ MIT
 
 # Changelog
 
+* 0.11.14 - Override sourcemap settings with `--inlineSourceMap` and `--inlineSources` (because that's what Browserify expects).
 * 0.11.13 - Fixed bug introduced in last change where non-entry point files were erroneously being excluded from the build.
 * 0.11.12 - Fixed compilation when the current working directory is a symlink.
 * 0.11.11 - Updated compiler host to support current TypeScript nightly.

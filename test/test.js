@@ -234,6 +234,16 @@ test('with tsconfig.json', function (t) {
 	});
 });
 
+test('with tsconfig.json using inlineSourceMap', function (t) {
+	process.chdir('./test/tsInlinesourceMap');
+	run('./x.ts', { }, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
 test('with custom compiler', function (t) {
 	var ts = _.clone(require('typescript'));
 

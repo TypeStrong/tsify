@@ -3,6 +3,7 @@
 [Browserify](http://browserify.org/) plugin for compiling [TypeScript](http://www.typescriptlang.org/)
 
 [![NPM version](https://img.shields.io/npm/v/tsify.svg)](https://www.npmjs.com/package/tsify)
+[![Downloads](http://img.shields.io/npm/dm/tsify.svg)](https://npmjs.org/package/tsify)
 [![Build status](https://img.shields.io/travis/smrq/tsify.svg)](http://travis-ci.org/smrq/tsify)
 [![Dependency status](https://img.shields.io/david/smrq/tsify.svg)](https://david-dm.org/smrq/tsify)
 [![devDependency Status](https://img.shields.io/david/dev/smrq/tsify.svg)](https://david-dm.org/smrq/tsify#info=devDependencies)

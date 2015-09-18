@@ -59,7 +59,7 @@ For use on the command line, use the flag `npm install -g`.
 * **tsify** supports the following extra options:
 	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  When using the API you can either pass in the name of the alternative compiler or a reference to the compiler.
 
-# does this work with...
+# Does this work with...
 
 ### tsconfig.json?
 

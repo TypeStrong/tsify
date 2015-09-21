@@ -1,6 +1,6 @@
 {
   "name": "tsify",
-  "version": "0.11.15",
+  "version": "0.11.16",
   "description": "Browserify plugin for compiling Typescript",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "debuglog": "^1.0.1",
     "lodash": "^3.8.0",
     "through2": "^2.0.0",
-    "typescript": "^1.5.3"
+    "typescript": "~1.5.3"
   },
   "devDependencies": {
     "browserify": "^11.0.1",

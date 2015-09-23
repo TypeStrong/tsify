@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/smrq/tsify"
+    "url": "git://github.com/TypeStrong/tsify"
   },
   "keywords": [
     "browserify",
@@ -20,9 +20,9 @@
   "author": "Greg Smith",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/smrq/tsify/issues"
+    "url": "https://github.com/TypeStrong/tsify/issues"
   },
-  "homepage": "https://github.com/smrq/tsify",
+  "homepage": "https://github.com/TypeStrong/tsify",
   "dependencies": {
     "convert-source-map": "^1.1.0",
     "debuglog": "^1.0.1",

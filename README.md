@@ -4,10 +4,10 @@
 
 [![NPM version](https://img.shields.io/npm/v/tsify.svg)](https://www.npmjs.com/package/tsify)
 [![Downloads](http://img.shields.io/npm/dm/tsify.svg)](https://npmjs.org/package/tsify)
-[![Build status](https://img.shields.io/travis/smrq/tsify.svg)](http://travis-ci.org/smrq/tsify)
-[![Dependency status](https://img.shields.io/david/smrq/tsify.svg)](https://david-dm.org/smrq/tsify)
-[![devDependency Status](https://img.shields.io/david/dev/smrq/tsify.svg)](https://david-dm.org/smrq/tsify#info=devDependencies)
-[![peerDependency Status](https://img.shields.io/david/peer/smrq/tsify.svg)](https://david-dm.org/smrq/tsify#info=peerDependencies)
+[![Build status](https://img.shields.io/travis/TypeStrong/tsify.svg)](http://travis-ci.org/TypeStrong/tsify)
+[![Dependency status](https://img.shields.io/david/TypeStrong/tsify.svg)](https://david-dm.org/TypeStrong/tsify)
+[![devDependency Status](https://img.shields.io/david/dev/TypeStrong/tsify.svg)](https://david-dm.org/TypeStrong/tsify#info=devDependencies)
+[![peerDependency Status](https://img.shields.io/david/peer/TypeStrong/tsify.svg)](https://david-dm.org/TypeStrong/tsify#info=peerDependencies)
 
 # Example Usage
 
@@ -53,7 +53,7 @@ For use on the command line, use the flag `npm install -g`.
 
 * **tsify** will generate sourcemaps if the `--debug` option is set on Browserify.
 * **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
-	* `-d, --declaration` - See [tsify#15](https://github.com/smrq/tsify/issues/15)
+	* `-d, --declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 	* `-m, --module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
 * **tsify** supports the following extra options:
@@ -65,7 +65,7 @@ For use on the command line, use the flag `npm install -g`.
 
 tsify will automatically read options from `tsconfig.json`.  However, some options from this file will be ignored:
 
-* `compilerOptions.declaration` - See [tsify#15](https://github.com/smrq/tsify/issues/15)
+* `compilerOptions.declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 * `compilerOptions.module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
 * `compilerOptions.out` and `compilerOptions.outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
 * `files` - Use Browserify's file input options instead.  This is necessary because Browserify needs to know which file(s) are the entry points to your program.
@@ -84,7 +84,7 @@ Use [grunt-browserify](https://github.com/jmreidy/grunt-browserify) and you shou
 
 ### IE 11?
 
-The inlined sourcemaps that Browserify generates [may not be readable by IE 11](//github.com/smrq/tsify/issues/19) for debugging purposes.  This is easy to fix by adding [exorcist](//github.com/thlorenz/exorcist) to your build workflow after Browserify.
+The inlined sourcemaps that Browserify generates [may not be readable by IE 11](//github.com/TypeStrong/tsify/issues/19) for debugging purposes.  This is easy to fix by adding [exorcist](//github.com/thlorenz/exorcist) to your build workflow after Browserify.
 
 # Why a plugin?
 

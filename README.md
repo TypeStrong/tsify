@@ -98,6 +98,7 @@ MIT
 
 # Changelog
 
+* 0.12.2 - Fixed resolution of entries outside of `process.cwd()` (thanks @pnlybubbles!)
 * 0.12.1 - Updated `typescript` dependency to lock it down to version 1.6.x
 * 0.12.0 - Updated to TypeScript 1.6.
 * 0.11.16 - Updated `typescript` dependency to lock it down to version 1.5.x

@@ -1,6 +1,7 @@
 var _       = require('lodash');
 var fs      = require('fs');
 var through = require('through2');
+var path    = require('path');
 
 function tsify(b, opts) {
 	var ts = opts.typescript || require('typescript');
@@ -45,9 +46,15 @@ function tsify(b, opts) {
 		function flush(next) {
 			var self = this;
 			var entries = rows
-				.map(function (row) { return row.file || row.id; })
+				.map(function (row) {
+					if (row.basedir && (row.file || row.id)) {
+						return path.resolve(row.basedir, row.file || row.id);
+					} else {
+						return row.file || row.id;
+					}
+				})
 				.filter(function (file) { return file; })
-				.map(function (file) { return fs.realpathSync(file) });
+				.map(function (file) { return fs.realpathSync(file); });
 			tsifier.reset();
 			tsifier.generateCache(entries);
 			rows.forEach(function (row) { self.push(row); });

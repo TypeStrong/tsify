@@ -57,7 +57,7 @@ For use on the command line, use the flag `npm install -g`.
 	* `-m, --module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
 * **tsify** supports the following extra options:
-	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  When using the API you can either pass in the name of the alternative compiler or a reference to the compiler.
+	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  When using the API you can either pass in the name of the alternative compiler (`.plugin('tsify', { typescript: 'ntypescript' })`) or a reference to the compiler (`.plugin('tsify', { typescript: require('typescript') })` good for when you want to use the bleeding edge compiler and not the one shipped with tsify).
 
 # Does this work with...
 

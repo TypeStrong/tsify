@@ -57,7 +57,9 @@ For use on the command line, use the flag `npm install -g`.
 	* `-m, --module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
 * **tsify** supports the following extra options:
-	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  When using the API you can either pass in the name of the alternative compiler (`.plugin('tsify', { typescript: 'ntypescript' })`) or a reference to the compiler (`.plugin('tsify', { typescript: require('typescript') })` good for when you want to use the bleeding edge compiler and not the one shipped with tsify).
+	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  Note that when using the API, you can pass either the name of the alternative compiler or a reference to it:
+		* `{ typescript: 'ntypescript' }`
+		* `{ typescript: require('typescript') }`, useful for when you want to use a different version of the official TypeScript compiler than the one packaged with tsify.
 
 # Does this work with...
 
@@ -67,7 +69,7 @@ tsify will automatically read options from `tsconfig.json`.  However, some optio
 
 * `compilerOptions.declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 * `compilerOptions.module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
-* `compilerOptions.out` and `compilerOptions.outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
+* `compilerOptions.out` and `compilerOptions.outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes its intermediate JavaScript output to an internal memory store instead of to the filesystem.
 * `files` - Use Browserify's file input options instead.  This is necessary because Browserify needs to know which file(s) are the entry points to your program.
 
 ### Watchify?
@@ -85,6 +87,15 @@ Use [grunt-browserify](https://github.com/jmreidy/grunt-browserify) and you shou
 ### IE 11?
 
 The inlined sourcemaps that Browserify generates [may not be readable by IE 11](//github.com/TypeStrong/tsify/issues/19) for debugging purposes.  This is easy to fix by adding [exorcist](//github.com/thlorenz/exorcist) to your build workflow after Browserify.
+
+# FAQ / Common issues
+
+### SyntaxError: 'import' and 'export' may appear only with 'sourceType: module'
+
+This error occurs when a TypeScript file is not compiled to JavaScript before being run through the Browserify bundler.  There are a couple known reasons you might run into this.
+
+* If you are trying to output in ES6 mode, then you have to use an additional transpilation step such as [babelify](//github.com/babel/babelify) because Browserify does not support bundling ES6 modules.
+* There is a known issue in Browserify regarding including files with `expose` set to the name of the included file.  More details and a workaround are available in [#60](//github.com/TypeStrong/tsify/issues/60).
 
 # Why a plugin?
 

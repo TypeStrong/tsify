@@ -95,6 +95,7 @@ The inlined sourcemaps that Browserify generates [may not be readable by IE 11](
 This error occurs when a TypeScript file is not compiled to JavaScript before being run through the Browserify bundler.  There are a couple known reasons you might run into this.
 
 * If you are trying to output in ES6 mode, then you have to use an additional transpilation step such as [babelify](//github.com/babel/babelify) because Browserify does not support bundling ES6 modules.
+* Make sure that if you're using the API, your setup `.plugin('tsify')` is done *before* any transforms such as `.transform('babelify')`.  **tsify** needs to run first!
 * There is a known issue in Browserify regarding including files with `expose` set to the name of the included file.  More details and a workaround are available in [#60](//github.com/TypeStrong/tsify/issues/60).
 
 # Why a plugin?

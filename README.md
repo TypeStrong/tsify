@@ -19,7 +19,7 @@ var tsify = require('tsify');
 
 browserify()
     .add('main.ts')
-    .plugin('tsify', { noImplicitAny: true })
+    .plugin(tsify, { noImplicitAny: true })
     .bundle()
     .on('error', function (error) { console.error(error.toString()); })
     .pipe(process.stdout);
@@ -87,6 +87,16 @@ Use [grunt-browserify](https://github.com/jmreidy/grunt-browserify) and you shou
 ### IE 11?
 
 The inlined sourcemaps that Browserify generates [may not be readable by IE 11](//github.com/TypeStrong/tsify/issues/19) for debugging purposes.  This is easy to fix by adding [exorcist](//github.com/thlorenz/exorcist) to your build workflow after Browserify.
+
+### ES2015? *(formerly known as ES6)*
+
+TypeScript's ES2015 output mode should work without too much additional setup.  Browserify does not support ES2015 modules, so if you want to use ES2015 you still need some transpilation step.  Make sure to add [babelify](//github.com/babel/babelify) to your list of transforms.  Note that if you are using the API, you need to set up **tsify** before babelify:
+
+``` js
+browserify()
+    .plugin(tsify, { target: 'es6' })
+    .transform(babelify)
+```
 
 # FAQ / Common issues
 

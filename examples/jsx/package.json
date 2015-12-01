@@ -1,0 +1,22 @@
+{
+  "name": "tsify-jsx",
+  "version": "0.0.0",
+  "description": "tsify Sample: JSX",
+  "scripts": {
+    "build-cli": "browserify -p tsify src/main.tsx typings/tsd.d.ts > public/bundle.js",
+    "build-script": "node ./build.js > public/bundle.js",
+    "start": "http-server public -o"
+  },
+  "author": "Greg Smith <smr.kyu@gmail.com> (http://github.com/smrq)",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "browserify": "^12.0.1",
+    "http-server": "^0.8.5",
+    "tsify": "*"
+  },
+  "dependencies": {
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3"
+  }
+}

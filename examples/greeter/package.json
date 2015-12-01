@@ -1,0 +1,16 @@
+{
+  "name": "tsify-greeter",
+  "version": "0.0.0",
+  "description": "tsify Sample: Greeter",
+  "scripts": {
+    "build-cli": "browserify -p tsify src/main.ts",
+    "build-script": "node ./build.js"
+  },
+  "author": "Greg Smith <smr.kyu@gmail.com> (http://github.com/smrq)",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "browserify": "*",
+    "tsify": "*"
+  }
+}

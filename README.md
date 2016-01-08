@@ -120,6 +120,7 @@ MIT
 
 # Changelog
 
+* 0.13.2 - Fixed `findConfigFile` for use with the TypeScript 1.8 dev version.
 * 0.13.1 - Fixed bug where `*.tsx` was not included in Browserify's list of extensions if the `jsx` option was set via `tsconfig.json`.
 * 0.13.0 - Updated to TypeScript 1.7.
 * 0.12.2 - Fixed resolution of entries outside of `process.cwd()` (thanks @pnlybubbles!)

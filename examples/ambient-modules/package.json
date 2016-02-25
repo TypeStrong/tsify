@@ -1,0 +1,21 @@
+{
+  "name": "tsifymathjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "mathjs": "^2.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^1.8.2",
+    "tsify": "^0.13.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

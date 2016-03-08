@@ -199,12 +199,6 @@ test('including external dependencies', function (t) {
 });
 
 test('tsx', function (t) {
-	var ts = require('typescript');
-	if (!ts.isTsx) {
-		t.comment('tsx not supported in this version of TypeScript: ' + ts.version);
-		return t.end();
-	}
-
 	run('./test/tsx/main.ts', { jsx: 'react' }, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [

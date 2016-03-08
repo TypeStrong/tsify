@@ -54,7 +54,6 @@ For use on the command line, use the flag `npm install -g`.
 * **tsify** will generate sourcemaps if the `--debug` option is set on Browserify.
 * **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
 	* `-d, --declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
-	* `-m, --module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
 * **tsify** supports the following extra options:
 	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  Note that when using the API, you can pass either the name of the alternative compiler or a reference to it:
@@ -68,7 +67,6 @@ For use on the command line, use the flag `npm install -g`.
 tsify will automatically read options from `tsconfig.json`.  However, some options from this file will be ignored:
 
 * `compilerOptions.declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
-* `compilerOptions.module` - This is defaulted to CommonJS automatically (or None when in ES6 mode).
 * `compilerOptions.out` and `compilerOptions.outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes its intermediate JavaScript output to an internal memory store instead of to the filesystem.
 * `files` - Use Browserify's file input options instead.  This is necessary because Browserify needs to know which file(s) are the entry points to your program.
 
@@ -120,6 +118,7 @@ MIT
 
 # Changelog
 
+* 0.14.1 - Removed module mode override for ES6 mode (because CommonJS mode is now supported by TS 1.8).
 * 0.14.0 - Updated to TypeScript 1.8 (thanks @joelday!)
 * 0.13.2 - Fixed `findConfigFile` for use with the TypeScript 1.8 dev version.
 * 0.13.1 - Fixed bug where `*.tsx` was not included in Browserify's list of extensions if the `jsx` option was set via `tsconfig.json`.

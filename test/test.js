@@ -88,6 +88,20 @@ test('with adjacent compiled files', function (t) {
 	});
 });
 
+test('allowJs', function (t) {
+	run('./test/allowJs/x.ts', { allowJs: true }, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/allowJs/x.ts', actual, '\'hello world\'');
+		expectMappedLine(t, 'test/allowJs/y.js', actual, 'console.log(message)');
+		expectMappedLine(t, 'test/allowJs/z.js', actual, '111');
+		t.end();
+	});
+});
+
 test('with nested dependencies', function (t) {
 	run('./test/withNestedDeps/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
@@ -416,6 +430,21 @@ function expectMappedToken(t, srcFile, compiled, token) {
 	var actualSrcPosition = smc.originalPositionFor(compiledPosition);
 
 	t.deepEqual(actualSrcPosition, expectedSrcPosition, 'Token "' + token + '" should be mapped correctly');
+}
+
+function expectMappedLine(t, srcFile, compiled, token) {
+	var src = fs.readFileSync(srcFile, 'utf-8');
+	var compiledPosition = indexToLineAndColumn(compiled, compiled.indexOf(token));
+	var expectedSrcPosition = indexToLineAndColumn(src, src.indexOf(token));
+	expectedSrcPosition.name = null;
+	expectedSrcPosition.source = srcFile;
+	expectedSrcPosition.column = 0;
+
+	var map = convert.fromSource(compiled).toObject();
+	var smc = new sm.SourceMapConsumer(map);
+	var actualSrcPosition = smc.originalPositionFor(compiledPosition);
+
+	t.deepEqual(actualSrcPosition, expectedSrcPosition, 'Line containing token "' + token + '" should be mapped correctly');
 }
 
 function countLinesUntil(str, index) {

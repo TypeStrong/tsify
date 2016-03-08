@@ -28,7 +28,7 @@
     "debuglog": "^1.0.1",
     "lodash": "^3.8.0",
     "through2": "^2.0.0",
-    "typescript": "~1.7.3"
+    "typescript": "~1.8.7"
   },
   "devDependencies": {
     "browserify": "^11.0.1",

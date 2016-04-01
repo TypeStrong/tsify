@@ -87,9 +87,9 @@ test('with adjacent compiled files', function (t) {
 		t.end();
 	});
 });
-
 test('allowJs', function (t) {
 	run('./test/allowJs/x.ts', { allowJs: true }, function (errors, actual) {
+    console.log('actual: ' + actual);
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -98,6 +98,18 @@ test('allowJs', function (t) {
 		expectMappedToken(t, 'test/allowJs/x.ts', actual, '\'hello world\'');
 		expectMappedLine(t, 'test/allowJs/y.js', actual, 'console.log(message)');
 		expectMappedLine(t, 'test/allowJs/z.js', actual, '111');
+		t.end();
+	});
+});
+
+test('allowJs2', function (t) {
+	run('./test/allowJs2/y.js', { allowJs: true, allowNonTsExtensions: true, target: 'ES5' }, function (errors, actual) {
+    console.log('actual: ' + actual);
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'message = hello'
+		]);
+		expectMappedLine(t, 'test/allowJs2/y.js', actual, 'console.log(message)');
 		t.end();
 	});
 });

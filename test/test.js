@@ -87,7 +87,6 @@ test('with adjacent compiled files', function (t) {
 		t.end();
 	});
 });
-
 test('allowJs', function (t) {
 	run('./test/allowJs/x.ts', { allowJs: true }, function (errors, actual) {
 		expectNoErrors(t, errors);
@@ -98,6 +97,17 @@ test('allowJs', function (t) {
 		expectMappedToken(t, 'test/allowJs/x.ts', actual, '\'hello world\'');
 		expectMappedLine(t, 'test/allowJs/y.js', actual, 'console.log(message)');
 		expectMappedLine(t, 'test/allowJs/z.js', actual, '111');
+		t.end();
+	});
+});
+
+test('allowJs2', function (t) {
+	run('./test/allowJs2/y.js', { allowJs: true, allowNonTsExtensions: true, target: 'ES5' }, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'message = hello'
+		]);
+		expectMappedLine(t, 'test/allowJs2/y.js', actual, 'fn(\'hello\');');
 		t.end();
 	});
 });
@@ -438,7 +448,6 @@ function expectMappedLine(t, srcFile, compiled, token) {
 	var expectedSrcPosition = indexToLineAndColumn(src, src.indexOf(token));
 	expectedSrcPosition.name = null;
 	expectedSrcPosition.source = srcFile;
-	expectedSrcPosition.column = 0;
 
 	var map = convert.fromSource(compiled).toObject();
 	var smc = new sm.SourceMapConsumer(map);

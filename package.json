@@ -23,6 +23,9 @@
     "url": "https://github.com/TypeStrong/tsify/issues"
   },
   "homepage": "https://github.com/TypeStrong/tsify",
+  "engines": {
+    "node": ">=0.12"
+  },
   "dependencies": {
     "convert-source-map": "^1.1.0",
     "debuglog": "^1.0.1",

@@ -261,7 +261,7 @@ test('including external dependencies', function (t) {
 	});
 });
 
-test('tsx', function (t) {
+test('jsx: react', function (t) {
 	run({
 		bOpts: { entries: './test/tsx/main.ts' },
 		tsifyOpts: { jsx: 'react' }
@@ -271,6 +271,20 @@ test('tsx', function (t) {
 			'div with contents: This is a cool component'
 		]);
 		expectMappedToken(t, 'test/tsx/CoolComponent.tsx', actual, 'div');
+		t.end();
+	});
+});
+
+test('jsx: preserve with babelify', function (t) {
+	run({
+		bOpts: { entries: ['./test/tsx/main.ts'] },
+		tsifyOpts: { jsx: 'preserve' },
+		beforeBundle: (b) => b.transform('babelify', { presets: ['react'], extensions: ['.tsx'] })
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'div with contents: This is a cool component'
+		]);
 		t.end();
 	});
 });

@@ -118,6 +118,7 @@ MIT
 
 # Changelog
 
+* 0.14.7 - Only generate sourcemap information in the compiler when `--debug` is set, for potential speed improvements when not using sourcemaps.
 * 0.14.6 - Fixed output when `--jsx=preserve` is set.
 * 0.14.5 - Removed `lodash` and `debuglog` dependencies.
 * 0.14.4 - Fixed sourcemap paths when using Browserify's `basedir` option.

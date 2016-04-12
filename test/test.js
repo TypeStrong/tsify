@@ -32,6 +32,20 @@ test('no arguments', function (t) {
 	});
 });
 
+test('basedir', function (t) {
+	run('./noArguments/x.ts', {}, { basedir: 'test' }, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'test/noArguments/x.ts', 'noArguments/x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, 'test/noArguments/y.ts', 'noArguments/y.ts', actual, 'console.log(message)');
+		expectMappedToken(t, 'test/noArguments/z.ts', 'noArguments/z.ts', actual, '111');
+		t.end();
+	});
+});
+
 test('late added entries', function (t) {
 	runLateAdded('./test/noArguments/x.ts', function (errors, actual) {
 		expectNoErrors(t, errors);
@@ -283,15 +297,15 @@ test('with custom compiler', function (t) {
 
 // Test helpers
 
-function run(main, tsifyOpts, cb) {
-	runHelper(main, [], tsifyOpts, cb);
+function run(main, tsifyOpts, bOpts, cb) {
+	runHelper(main, [], tsifyOpts, bOpts, cb);
 }
 
-function runLateAdded(main, tsifyOpts, cb) {
+function runLateAdded(main, tsifyOpts, bOpts, cb) {
 	runHelper([], main, tsifyOpts, cb);
 }
 
-function runHelper(entries, add, tsifyOpts, cb) {
+function runHelper(entries, add, tsifyOpts, bOpts, cb) {
 	var errors = [];
 	var calledBack = false;
 
@@ -300,11 +314,18 @@ function runHelper(entries, add, tsifyOpts, cb) {
 	if (!Array.isArray(add))
 		add = [add];
 	if (!cb) {
+		cb = bOpts;
+		bOpts = {};
+	}
+	if (!cb) {
 		cb = tsifyOpts;
 		tsifyOpts = {};
 	}
 
-	var b = browserify({ entries: entries, debug: true })
+	bOpts.entries = entries;
+	bOpts.debug = true;
+
+	var b = browserify(bOpts)
 		.plugin(tsify, tsifyOpts);
 
 	add.forEach(function (entry) {
@@ -418,12 +439,18 @@ function expectConsoleOutputFromScript(t, src, expected) {
 	t.deepEqual(actual, expected, 'Should have expected console.log output');
 }
 
-function expectMappedToken(t, srcFile, compiled, token) {
+function expectMappedToken(t, srcFile, mapSourceFile, compiled, token) {
+	if (!token) {
+		token = compiled;
+		compiled = mapSourceFile;
+		mapSourceFile = srcFile;
+	}
+
 	var src = fs.readFileSync(srcFile, 'utf-8');
 	var compiledPosition = indexToLineAndColumn(compiled, compiled.indexOf(token));
 	var expectedSrcPosition = indexToLineAndColumn(src, src.indexOf(token));
 	expectedSrcPosition.name = null;
-	expectedSrcPosition.source = srcFile;
+	expectedSrcPosition.source = mapSourceFile;
 
 	var map = convert.fromSource(compiled).toObject();
 	var smc = new sm.SourceMapConsumer(map);

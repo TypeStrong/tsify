@@ -8,7 +8,7 @@ function tsify(b, opts) {
 	if (_.isString(ts)) { ts = require(ts); }
 
 	var Tsifier = require('./lib/Tsifier')(ts);
-	var tsifier = new Tsifier(opts);
+	var tsifier = new Tsifier(opts, b._options);
 
 	tsifier.on('error', function (error) {
 		b.pipeline.emit('error', error);

@@ -96,8 +96,8 @@ test('allowJs', function (t) {
 			'222'
 		]);
 		expectMappedToken(t, 'test/allowJs/x.ts', actual, '\'hello world\'');
-		expectMappedLine(t, 'test/allowJs/y.js', actual, 'console.log(message)');
-		expectMappedLine(t, 'test/allowJs/z.js', actual, '111');
+		expectMappedToken(t, 'test/allowJs/y.js', actual, 'console.log(message)');
+		expectMappedToken(t, 'test/allowJs/z.js', actual, '111');
 		t.end();
 	});
 });
@@ -430,21 +430,6 @@ function expectMappedToken(t, srcFile, compiled, token) {
 	var actualSrcPosition = smc.originalPositionFor(compiledPosition);
 
 	t.deepEqual(actualSrcPosition, expectedSrcPosition, 'Token "' + token + '" should be mapped correctly');
-}
-
-function expectMappedLine(t, srcFile, compiled, token) {
-	var src = fs.readFileSync(srcFile, 'utf-8');
-	var compiledPosition = indexToLineAndColumn(compiled, compiled.indexOf(token));
-	var expectedSrcPosition = indexToLineAndColumn(src, src.indexOf(token));
-	expectedSrcPosition.name = null;
-	expectedSrcPosition.source = srcFile;
-	expectedSrcPosition.column = 0;
-
-	var map = convert.fromSource(compiled).toObject();
-	var smc = new sm.SourceMapConsumer(map);
-	var actualSrcPosition = smc.originalPositionFor(compiledPosition);
-
-	t.deepEqual(actualSrcPosition, expectedSrcPosition, 'Line containing token "' + token + '" should be mapped correctly');
 }
 
 function countLinesUntil(str, index) {

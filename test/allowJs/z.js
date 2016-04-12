@@ -1,4 +1,3 @@
-function fn(n) {
+export default function fn(n) {
     return n * 111;
 }
-module.exports = fn;

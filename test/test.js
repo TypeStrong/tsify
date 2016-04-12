@@ -1,9 +1,9 @@
 var test = require('tape');
 
-var _ = require('lodash');
 var browserify = require('browserify');
 var convert = require('convert-source-map');
 var es = require('event-stream');
+var extend = require('util')._extend;
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs-extra');
 var os = require('os');
@@ -274,7 +274,7 @@ test('with tsconfig.json', function (t) {
 });
 
 test('with custom compiler', function (t) {
-	var ts = _.clone(require('typescript'));
+	var ts = extend({}, require('typescript'));
 
 	var oldCreateSourceFile = ts.createSourceFile;
 	ts.createSourceFile = function (filename, text, languageVersion, version) {

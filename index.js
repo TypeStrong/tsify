@@ -1,11 +1,12 @@
-var _       = require('lodash');
 var fs      = require('fs');
 var through = require('through2');
 var path    = require('path');
 
 function tsify(b, opts) {
 	var ts = opts.typescript || require('typescript');
-	if (_.isString(ts)) { ts = require(ts); }
+	if (typeof ts === 'string' || ts instanceof String) {
+		ts = require(ts);
+	}
 
 	var Tsifier = require('./lib/Tsifier')(ts);
 	var tsifier = new Tsifier(opts, b._options);

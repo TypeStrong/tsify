@@ -118,6 +118,7 @@ MIT
 
 # Changelog
 
+* 0.14.5 - Removed `lodash` and `debuglog` dependencies.
 * 0.14.4 - Fixed sourcemap paths when using Browserify's `basedir` option.
 * 0.14.3 - Fixed `allowJs` option to enable transpiling ES6+ JS to ES5 or lower.
 * 0.14.2 - Fixed `findConfigFile` for TypeScript 1.9 dev.

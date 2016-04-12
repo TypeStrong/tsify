@@ -4,7 +4,7 @@
   "description": "Browserify plugin for compiling Typescript",
   "main": "index.js",
   "scripts": {
-    "lint": "jshint --reporter node_modules/jshint-stylish/stylish.js .",
+    "lint": "eslint .",
     "test": "test-peer-range browserify",
     "test-main": "node test/test.js"
   },
@@ -33,10 +33,9 @@
   },
   "devDependencies": {
     "browserify": "^13.0.0",
+    "eslint": "^2.7.0",
     "event-stream": "^3.3.1",
     "fs-extra": "^0.26.7",
-    "jshint": "^2.7.0",
-    "jshint-stylish": "^2.0.1",
     "node-foo": "^0.2.3",
     "source-map": "^0.5.3",
     "tape": "^4.0.0",

@@ -19,7 +19,9 @@ var buildTimeout = 5000;
 // Tests
 
 test('no arguments', function (t) {
-	run('./test/noArguments/x.ts', function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/noArguments/x.ts'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -33,7 +35,9 @@ test('no arguments', function (t) {
 });
 
 test('basedir', function (t) {
-	run('./noArguments/x.ts', {}, { basedir: 'test' }, function (errors, actual) {
+	run({
+		bOpts: { basedir: 'test', entries: ['./noArguments/x.ts'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -47,7 +51,9 @@ test('basedir', function (t) {
 });
 
 test('late added entries', function (t) {
-	runLateAdded('./test/noArguments/x.ts', function (errors, actual) {
+	run({
+		beforeBundle: (b) => b.add('./test/noArguments/x.ts')
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -61,7 +67,9 @@ test('late added entries', function (t) {
 });
 
 test('full path includes', function (t) {
-	run(path.resolve('./test/noArguments/x.ts'), function (errors, actual) {
+	run({
+		bOpts: { entries: [path.resolve('./test/noArguments/x.ts')] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -75,7 +83,9 @@ test('full path includes', function (t) {
 });
 
 test('non-TS main file', function (t) {
-	run('./test/withJsRoot/x.js', function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/withJsRoot/x.js'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -89,7 +99,9 @@ test('non-TS main file', function (t) {
 });
 
 test('with adjacent compiled files', function (t) {
-	run('./test/withAdjacentCompiledFiles/x.ts', function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/withAdjacentCompiledFiles/x.ts'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -103,7 +115,10 @@ test('with adjacent compiled files', function (t) {
 });
 
 test('allowJs', function (t) {
-	run('./test/allowJs/x.ts', { allowJs: true }, function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/allowJs/x.ts'] },
+		tsifyOpts: { allowJs: true }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -117,7 +132,9 @@ test('allowJs', function (t) {
 });
 
 test('with nested dependencies', function (t) {
-	run('./test/withNestedDeps/x.ts', function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/withNestedDeps/x.ts'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -131,7 +148,9 @@ test('with nested dependencies', function (t) {
 });
 
 test('syntax error', function (t) {
-	run('./test/syntaxError/x.ts', function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/syntaxError/x.ts'] }
+	}, function (errors, actual) {
 		expectErrors(t, errors, [
 			{ name: 'TS1005', line: 1, column: 9, file: 'test/syntaxError/x.ts' },
 			{ name: 'TS1005', line: 2, column: 9, file: 'test/syntaxError/x.ts' }
@@ -142,7 +161,9 @@ test('syntax error', function (t) {
 });
 
 test('type error', function (t) {
-	run('./test/typeError/x.ts', function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/typeError/x.ts'] }
+	}, function (errors, actual) {
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
 		]);
@@ -158,7 +179,10 @@ test('type error', function (t) {
 });
 
 test('type error with noEmitOnError', function (t) {
-	run('./test/typeError/x.ts', { noEmitOnError: true }, function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/typeError/x.ts'] },
+		tsifyOpts: { noEmitOnError: true }
+	}, function (errors, actual) {
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
 		]);
@@ -168,7 +192,9 @@ test('type error with noEmitOnError', function (t) {
 });
 
 test('multiple entry points', function (t) {
-	run(['./test/multipleEntryPoints/x1.ts', './test/multipleEntryPoints/x2.ts'], function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/multipleEntryPoints/x1.ts', './test/multipleEntryPoints/x2.ts'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -185,7 +211,12 @@ test('multiple entry points', function (t) {
 });
 
 test('late added entries with multiple entry points', function (t) {
-	runLateAdded(['./test/multipleEntryPoints/x1.ts', './test/multipleEntryPoints/x2.ts'], function (errors, actual) {
+	run({
+		beforeBundle: (b) => {
+			b.add('./test/multipleEntryPoints/x1.ts');
+			b.add('./test/multipleEntryPoints/x2.ts');
+		}
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -202,7 +233,9 @@ test('late added entries with multiple entry points', function (t) {
 });
 
 test('including .d.ts file', function (t) {
-	run(['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'], function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/declarationFile/x.ts', './test/declarationFile/interface.d.ts'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'Doctor',
@@ -214,7 +247,9 @@ test('including .d.ts file', function (t) {
 });
 
 test('including external dependencies', function (t) {
-	run('./test/externalDeps/x.ts', function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/externalDeps/x.ts'] }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'node-foo aaa:this',
@@ -227,7 +262,10 @@ test('including external dependencies', function (t) {
 });
 
 test('tsx', function (t) {
-	run('./test/tsx/main.ts', { jsx: 'react' }, function (errors, actual) {
+	run({
+		bOpts: { entries: './test/tsx/main.ts' },
+		tsifyOpts: { jsx: 'react' }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'div with contents: This is a cool component'
@@ -239,7 +277,9 @@ test('tsx', function (t) {
 
 test('watchify', function (t) {
 	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
-	runWatchify('./test/watchify/main.ts', [
+	runWatchify({
+		beforeBundle: (b) => b.add('./test/watchify/main.ts')
+	}, [
 		function (errors, actual, triggerChange) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
 			fs.copySync('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
@@ -265,7 +305,10 @@ test('watchify', function (t) {
 
 test('with tsconfig.json', function (t) {
 	process.chdir('./test/tsconfig');
-	run('./x.ts', { noEmitOnError: false }, function (errors, actual) {
+	run({
+		bOpts: { entries: ['./x.ts'] },
+		tsifyOpts: { noEmitOnError: false }
+	}, function (errors, actual) {
 		expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'x.ts' }]);
 		expectConsoleOutputFromScript(t, actual, [3]);
 		process.chdir('../..');
@@ -275,7 +318,6 @@ test('with tsconfig.json', function (t) {
 
 test('with custom compiler', function (t) {
 	var ts = extend({}, require('typescript'));
-
 	var oldCreateSourceFile = ts.createSourceFile;
 	ts.createSourceFile = function (filename, text, languageVersion, version) {
 		if (/x\.ts/.test(filename)) {
@@ -284,7 +326,10 @@ test('with custom compiler', function (t) {
 		return oldCreateSourceFile.call(ts, filename, text, languageVersion, version);
 	}
 
-	run('./test/noArguments/x.ts', { typescript: ts }, function (errors, actual) {
+	run({
+		bOpts: { entries: ['./test/noArguments/x.ts'] },
+		tsifyOpts: { typescript: ts }
+	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'Custom compiler was used',
@@ -297,41 +342,19 @@ test('with custom compiler', function (t) {
 
 // Test helpers
 
-function run(main, tsifyOpts, bOpts, cb) {
-	runHelper(main, [], tsifyOpts, bOpts, cb);
-}
-
-function runLateAdded(main, tsifyOpts, bOpts, cb) {
-	runHelper([], main, tsifyOpts, cb);
-}
-
-function runHelper(entries, add, tsifyOpts, bOpts, cb) {
-	var errors = [];
-	var calledBack = false;
-
-	if (!Array.isArray(entries))
-		entries = [entries];
-	if (!Array.isArray(add))
-		add = [add];
-	if (!cb) {
-		cb = bOpts;
-		bOpts = {};
-	}
-	if (!cb) {
-		cb = tsifyOpts;
-		tsifyOpts = {};
-	}
-
-	bOpts.entries = entries;
+function run(config, cb) {
+	var bOpts = config.bOpts || {};
 	bOpts.debug = true;
+
+	var tsifyOpts = config.tsifyOpts || {};
+	var beforeBundle = config.beforeBundle || function() {};
 
 	var b = browserify(bOpts)
 		.plugin(tsify, tsifyOpts);
+	beforeBundle(b);
 
-	add.forEach(function (entry) {
-		b.add(entry);
-	});
-
+	var calledBack = false;
+	var errors = [];
 	b.bundle()
 		.on('error', function (error) {
 			errors.push(error);
@@ -351,13 +374,12 @@ function runHelper(entries, add, tsifyOpts, bOpts, cb) {
 	}, buildTimeout);
 }
 
-function runWatchify(add, tsifyOpts, handlers) {
-	if (!Array.isArray(add))
-		add = [add];
-	if (!handlers) {
-		handlers = tsifyOpts;
-		tsifyOpts = {};
-	}
+function runWatchify(config, handlers) {
+	var bOpts = config.bOpts || {};
+	bOpts.debug = true;
+
+	var tsifyOpts = config.tsifyOpts || {};
+	var beforeBundle = config.beforeBundle || function() {};
 
 	var watcher = new EventEmitter();
 	watcher.close = function () {};
@@ -365,9 +387,8 @@ function runWatchify(add, tsifyOpts, handlers) {
 	var b = watchify(browserify(watchify.args));
 	b._watcher = function () { return watcher; };
 	b.plugin(tsify, tsifyOpts);
-	add.forEach(function (entry) {
-		b.add(entry);
-	});
+	beforeBundle(b);
+
 	b.on('update', rebundle);
 	rebundle();
 

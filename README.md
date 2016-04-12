@@ -118,6 +118,7 @@ MIT
 
 # Changelog
 
+* 0.14.4 - Fixed sourcemap paths when using Browserify's `basedir` option.
 * 0.14.3 - Fixed `allowJs` option to enable transpiling ES6+ JS to ES5 or lower.
 * 0.14.2 - Fixed `findConfigFile` for TypeScript 1.9 dev.
 * 0.14.1 - Removed module mode override for ES6 mode (because CommonJS mode is now supported by TS 1.8).

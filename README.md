@@ -93,7 +93,7 @@ TypeScript's ES2015 output mode should work without too much additional setup.  
 ``` js
 browserify()
     .plugin(tsify, { target: 'es6' })
-    .transform(babelify)
+    .transform(babelify, { extensions: [ '.tsx', '.ts ] })
 ```
 
 # FAQ / Common issues

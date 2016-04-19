@@ -331,8 +331,47 @@ test('with tsconfig.json', function (t) {
 	});
 });
 
+test('with multiple tsconfig.jsons (or is it tsconfigs.json?), finding default config', function (t) {
+	process.chdir('./test/multipleConfigs');
+	run({
+		bOpts: { entries: ['./nested/x.ts'] },
+		tsifyOpts: { noEmitOnError: false }
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using project file', function (t) {
+	process.chdir('./test/multipleConfigs');
+	run({
+		bOpts: { entries: ['./nested/x.ts'] },
+		tsifyOpts: { noEmitOnError: false, project: 'tsconfig.custom.json' }
+	}, function (errors, actual) {
+		expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
 // This behavior relies on the fix in Microsoft/Typescript#2965 to work correctly
 if (semver.gte(require('typescript').version, '1.9.0-dev')) {
+	test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using project dir', function (t) {
+		process.chdir('./test/multipleConfigs');
+		run({
+			bOpts: { entries: ['./nested/x.ts'] },
+			tsifyOpts: { noEmitOnError: false, project: 'nested' }
+		}, function (errors, actual) {
+			expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
+			expectConsoleOutputFromScript(t, actual, [3]);
+			process.chdir('../..');
+			t.end();
+		});
+	});
+
 	test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using basedir', function (t) {
 		process.chdir('./test/multipleConfigs');
 		run({

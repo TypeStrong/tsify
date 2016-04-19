@@ -118,6 +118,7 @@ MIT
 
 # Changelog
 
+* 0.15.1 - Added support for `--project` flag to use a custom location for `tsconfig.json`.
 * 0.15.0 - Removed `debuglog` dependency.
 * 0.14.8 - Reverted removal of `debuglog` dependency for compatibility with old versions of Node 0.12.
 * 0.14.7 - Only generate sourcemap information in the compiler when `--debug` is set, for potential speed improvements when not using sourcemaps.

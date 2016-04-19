@@ -39,6 +39,7 @@
     "event-stream": "^3.3.1",
     "fs-extra": "^0.28.0",
     "node-foo": "^0.2.3",
+    "semver": "^5.1.0",
     "source-map": "^0.5.3",
     "tape": "^4.0.0",
     "test-peer-range": "^1.0.1",

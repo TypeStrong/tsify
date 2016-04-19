@@ -8,6 +8,7 @@ var EventEmitter = require('events').EventEmitter;
 var fs = require('fs-extra');
 var os = require('os');
 var path = require('path');
+var semver = require('semver');
 var sm = require('source-map');
 var watchify = require('watchify');
 var vm = require('vm');
@@ -52,7 +53,7 @@ test('basedir', function (t) {
 
 test('late added entries', function (t) {
 	run({
-		beforeBundle: (b) => b.add('./test/noArguments/x.ts')
+		beforeBundle: function (b) { b.add('./test/noArguments/x.ts'); }
 	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
@@ -212,7 +213,7 @@ test('multiple entry points', function (t) {
 
 test('late added entries with multiple entry points', function (t) {
 	run({
-		beforeBundle: (b) => {
+		beforeBundle: function (b) {
 			b.add('./test/multipleEntryPoints/x1.ts');
 			b.add('./test/multipleEntryPoints/x2.ts');
 		}
@@ -279,7 +280,7 @@ test('jsx: preserve with babelify', function (t) {
 	run({
 		bOpts: { entries: ['./test/tsx/main.ts'] },
 		tsifyOpts: { jsx: 'preserve' },
-		beforeBundle: (b) => b.transform('babelify', { presets: ['react'], extensions: ['.tsx'] })
+		beforeBundle: function (b) { b.transform('babelify', { presets: ['react'], extensions: ['.tsx'] }) }
 	}, function (errors, actual) {
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
@@ -292,7 +293,7 @@ test('jsx: preserve with babelify', function (t) {
 test('watchify', function (t) {
 	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
 	runWatchify({
-		beforeBundle: (b) => b.add('./test/watchify/main.ts')
+		beforeBundle: function (b) { b.add('./test/watchify/main.ts') }
 	}, [
 		function (errors, actual, triggerChange) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
@@ -329,6 +330,22 @@ test('with tsconfig.json', function (t) {
 		t.end();
 	});
 });
+
+// This behavior relies on the fix in Microsoft/Typescript#2965 to work correctly
+if (semver.gte(require('typescript').version, '1.9.0-dev')) {
+	test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using basedir', function (t) {
+		process.chdir('./test/multipleConfigs');
+		run({
+			bOpts: { basedir: 'nested', entries: ['./x.ts'] },
+			tsifyOpts: { noEmitOnError: false }
+		}, function (errors, actual) {
+			expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
+			expectConsoleOutputFromScript(t, actual, [3]);
+			process.chdir('../..');
+			t.end();
+		});
+	});
+}
 
 test('with custom compiler', function (t) {
 	var ts = extend({}, require('typescript'));

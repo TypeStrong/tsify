@@ -33,7 +33,7 @@ $ browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js
 
 Note that when using the Browserify CLI, compilation will always halt on the first error encountered, unlike the regular TypeScript CLI.  This behavior can be overridden in the API, as shown in the API example.
 
-Also note that square brackets `[ ]` in above example are required if you want to pass parameters to TypeScript compiler, they don't denote optional part of the command.
+Also note that the square brackets `[ ]` in the example above are *required* if you want to pass parameters to tsify; they don't denote an optional part of the command.
 
 # Installation
 

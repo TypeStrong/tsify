@@ -120,6 +120,7 @@ MIT
 
 # Changelog
 
+* 0.15.2 - Added support for the `files` property of `tsconfig.json`.
 * 0.15.1 - Added support for `--project` flag to use a custom location for `tsconfig.json`.
 * 0.15.0 - Removed `debuglog` dependency.
 * 0.14.8 - Reverted removal of `debuglog` dependency for compatibility with old versions of Node 0.12.

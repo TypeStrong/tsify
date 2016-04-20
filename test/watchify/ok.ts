@@ -1,2 +1,2 @@
-function dep(n: number) { console.log(n); }
+function dep(thing: IThing) { console.log(thing.thing1); }
 export = dep;

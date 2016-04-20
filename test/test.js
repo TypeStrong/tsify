@@ -115,6 +115,74 @@ test('with adjacent compiled files', function (t) {
 	});
 });
 
+test('with tsconfig.json', function (t) {
+	process.chdir('./test/tsconfig');
+	run({
+		bOpts: { entries: ['./x.ts'] },
+		tsifyOpts: { noEmitOnError: false }
+	}, function (errors, actual) {
+		expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'x.ts' }]);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+test('with multiple tsconfig.jsons (or is it tsconfigs.json?), finding default config', function (t) {
+	process.chdir('./test/multipleConfigs');
+	run({
+		bOpts: { entries: ['./nested/x.ts'] },
+		tsifyOpts: { noEmitOnError: false }
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using project file', function (t) {
+	process.chdir('./test/multipleConfigs');
+	run({
+		bOpts: { entries: ['./nested/x.ts'] },
+		tsifyOpts: { noEmitOnError: false, project: 'tsconfig.custom.json' }
+	}, function (errors, actual) {
+		expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+// This behavior relies on the fix in Microsoft/Typescript#2965 to work correctly
+if (semver.gte(require('typescript').version, '1.9.0-dev')) {
+	test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using project dir', function (t) {
+		process.chdir('./test/multipleConfigs');
+		run({
+			bOpts: { entries: ['./nested/x.ts'] },
+			tsifyOpts: { noEmitOnError: false, project: 'nested' }
+		}, function (errors, actual) {
+			expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
+			expectConsoleOutputFromScript(t, actual, [3]);
+			process.chdir('../..');
+			t.end();
+		});
+	});
+
+	test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using basedir', function (t) {
+		process.chdir('./test/multipleConfigs');
+		run({
+			bOpts: { basedir: 'nested', entries: ['./x.ts'] },
+			tsifyOpts: { noEmitOnError: false }
+		}, function (errors, actual) {
+			expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
+			expectConsoleOutputFromScript(t, actual, [3]);
+			process.chdir('../..');
+			t.end();
+		});
+	});
+}
+
 test('allowJs', function (t) {
 	run({
 		bOpts: { entries: ['./test/allowJs/x.ts'] },
@@ -247,6 +315,21 @@ test('including .d.ts file', function (t) {
 	});
 });
 
+test('including .d.ts file via tsconfig', function (t) {
+	run({
+		bOpts: { entries: ['./test/declarationFile/x.ts'] },
+		tsifyOpts: { project: './test/declarationFile/tsconfig.custom.json' }
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'Doctor',
+			'Seuss'
+		]);
+		expectMappedToken(t, 'test/declarationFile/x.ts', actual, 'x.thing1');
+		t.end();
+	});
+});
+
 test('including external dependencies', function (t) {
 	run({
 		bOpts: { entries: ['./test/externalDeps/x.ts'] }
@@ -291,100 +374,34 @@ test('jsx: preserve with babelify', function (t) {
 });
 
 test('watchify', function (t) {
-	fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+	process.chdir('./test/watchify');
+	fs.copySync('./ok.ts', './.tmp.ts');
 	runWatchify({
-		beforeBundle: function (b) { b.add('./test/watchify/main.ts') }
+		beforeBundle: function (b) { b.add('./main.ts') }
 	}, [
 		function (errors, actual, triggerChange) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
-			fs.copySync('./test/watchify/typeError.ts', './test/watchify/.tmp.ts');
+			fs.copySync('./typeError.ts', './.tmp.ts');
 			triggerChange();
 		},
 		function (errors, actual, triggerChange) {
 			t.ok(errors.length > 0, 'Should have type errors');
-			fs.copySync('./test/watchify/syntaxError.ts', './test/watchify/.tmp.ts');
+			fs.copySync('./syntaxError.ts', './tmp.ts');
 			triggerChange();
 		},
 		function (errors, actual, triggerChange) {
 			t.ok(errors.length > 0, 'Should have syntax errors');
-			fs.copySync('./test/watchify/ok.ts', './test/watchify/.tmp.ts');
+			fs.copySync('./ok.ts', './.tmp.ts');
 			triggerChange();
 		},
 		function (errors, actual, triggerChange, b) {
 			t.deepEqual(errors, [], 'Should have no compilation errors');
 			b.close();
+			process.chdir('../..');
 			t.end();
 		}
 	]);
 });
-
-test('with tsconfig.json', function (t) {
-	process.chdir('./test/tsconfig');
-	run({
-		bOpts: { entries: ['./x.ts'] },
-		tsifyOpts: { noEmitOnError: false }
-	}, function (errors, actual) {
-		expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'x.ts' }]);
-		expectConsoleOutputFromScript(t, actual, [3]);
-		process.chdir('../..');
-		t.end();
-	});
-});
-
-test('with multiple tsconfig.jsons (or is it tsconfigs.json?), finding default config', function (t) {
-	process.chdir('./test/multipleConfigs');
-	run({
-		bOpts: { entries: ['./nested/x.ts'] },
-		tsifyOpts: { noEmitOnError: false }
-	}, function (errors, actual) {
-		expectNoErrors(t, errors);
-		expectConsoleOutputFromScript(t, actual, [3]);
-		process.chdir('../..');
-		t.end();
-	});
-});
-
-test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using project file', function (t) {
-	process.chdir('./test/multipleConfigs');
-	run({
-		bOpts: { entries: ['./nested/x.ts'] },
-		tsifyOpts: { noEmitOnError: false, project: 'tsconfig.custom.json' }
-	}, function (errors, actual) {
-		expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
-		expectConsoleOutputFromScript(t, actual, [3]);
-		process.chdir('../..');
-		t.end();
-	});
-});
-
-// This behavior relies on the fix in Microsoft/Typescript#2965 to work correctly
-if (semver.gte(require('typescript').version, '1.9.0-dev')) {
-	test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using project dir', function (t) {
-		process.chdir('./test/multipleConfigs');
-		run({
-			bOpts: { entries: ['./nested/x.ts'] },
-			tsifyOpts: { noEmitOnError: false, project: 'nested' }
-		}, function (errors, actual) {
-			expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
-			expectConsoleOutputFromScript(t, actual, [3]);
-			process.chdir('../..');
-			t.end();
-		});
-	});
-
-	test('with multiple tsconfig.jsons (or is it tsconfigs.json?) using basedir', function (t) {
-		process.chdir('./test/multipleConfigs');
-		run({
-			bOpts: { basedir: 'nested', entries: ['./x.ts'] },
-			tsifyOpts: { noEmitOnError: false }
-		}, function (errors, actual) {
-			expectErrors(t, errors, [{ name: 'TS7005', line: 1, column: 5, file: 'nested/x.ts' }]);
-			expectConsoleOutputFromScript(t, actual, [3]);
-			process.chdir('../..');
-			t.end();
-		});
-	});
-}
 
 test('with custom compiler', function (t) {
 	var ts = extend({}, require('typescript'));

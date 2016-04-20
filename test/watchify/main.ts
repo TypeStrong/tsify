@@ -1,2 +1,2 @@
 import dep = require('./.tmp');
-dep(5);
+dep({ thing1: '5', thing2: '6' });

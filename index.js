@@ -19,7 +19,11 @@ function tsify(b, opts) {
 	});
 
 	setupPipeline();
-	b.transform(tsifier.transform.bind(tsifier));
+
+	var transformOpts = {
+		global: opts.global
+	};
+	b.transform(tsifier.transform.bind(tsifier), transformOpts);
 
 	b.on('reset', function () {
 		setupPipeline();

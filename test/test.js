@@ -373,6 +373,19 @@ test('jsx: preserve with babelify', function (t) {
 	});
 });
 
+test('global transform', function (t) {
+	run({
+		bOpts: { entries: ['./test/globalTransform/a.ts'] },
+		tsifyOpts: { global: true }
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'Hello from B!'
+		]);
+		t.end();
+	});
+});
+
 test('watchify', function (t) {
 	process.chdir('./test/watchify');
 	fs.copySync('./ok.ts', './.tmp.ts');

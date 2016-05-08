@@ -568,7 +568,7 @@ function expectNoErrors(t, errors) {
 
 function expectErrors(t, actual, expected) {
 	t.equal(actual.length, expected.length, 'Should have the correct error count');
-	for (var i = 0; i < actual.length; ++i) {
+	for (var i = 0; i < actual.length && i < expected.length; ++i) {
 		t.equal(actual[i].fileName, expected[i].file, 'Error #' + i + ' should have filename ' + expected[i].name);
 		t.equal(actual[i].line, expected[i].line, 'Error #' + i + ' should be on line ' + expected[i].line);
 		t.equal(actual[i].column, expected[i].column, 'Error #' + i + ' should be on column ' + expected[i].column);

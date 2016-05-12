@@ -611,11 +611,20 @@ function expectMappedToken(t, srcFile, mapSourceFile, compiled, token) {
 	expectedSrcPosition.name = null;
 	expectedSrcPosition.source = mapSourceFile;
 
-	var map = convert.fromSource(compiled).toObject();
-	var smc = new sm.SourceMapConsumer(map);
-	var actualSrcPosition = smc.originalPositionFor(compiledPosition);
+	if (expectedSrcPosition.column === -1) {
+		t.fail('Token "' + token + '" should be in expected code');
+	}
+	if (compiledPosition.column === -1) {
+		t.fail('Token "' + token + '" should be in compiled code');
+	}
 
-	t.deepEqual(actualSrcPosition, expectedSrcPosition, 'Token "' + token + '" should be mapped correctly');
+	if (expectedSrcPosition.column !== -1 && compiledPosition.column !== -1) {
+		var map = convert.fromSource(compiled).toObject();
+		var smc = new sm.SourceMapConsumer(map);
+		var actualSrcPosition = smc.originalPositionFor(compiledPosition);
+
+		t.deepEqual(actualSrcPosition, expectedSrcPosition, 'Token "' + token + '" should be mapped correctly');
+	}
 }
 
 function countLinesUntil(str, index) {

@@ -356,10 +356,10 @@ test('with files outside cwd', function (t) {
 			'hello world',
 			'222'
 		]);
+		expectMappedToken(t, 'x.ts', actual, '\'hello world\'');
+		expectMappedToken(t, '../shared/y.ts', actual, 'console.log(message)');
+		expectMappedToken(t, '../shared/z.ts', actual, '111');
 		process.chdir('../../..');
-		// expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
-		// expectMappedToken(t, 'test/noArguments/y.ts', actual, 'console.log(message)');
-		// expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
 		t.end();
 	});
 });
@@ -472,7 +472,7 @@ test('with custom compiler', function (t) {
 		]);
 		t.end();
 	});
-})
+});
 
 // Test helpers
 

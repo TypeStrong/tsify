@@ -330,6 +330,25 @@ test('including .d.ts file via tsconfig', function (t) {
 	});
 });
 
+test('with files outside cwd', function (t) {
+	process.chdir('./test/filesOutsideCwd/cwd');
+	run({
+		bOpts: { entries: ['./x.ts'] }
+	}, function (errors, actual) {
+		console.log(actual);
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		process.chdir('../../..');
+		// expectMappedToken(t, 'test/noArguments/x.ts', actual, '\'hello world\'');
+		// expectMappedToken(t, 'test/noArguments/y.ts', actual, 'console.log(message)');
+		// expectMappedToken(t, 'test/noArguments/z.ts', actual, '111');
+		t.end();
+	});
+});
+
 test('including external dependencies', function (t) {
 	run({
 		bOpts: { entries: ['./test/externalDeps/x.ts'] }

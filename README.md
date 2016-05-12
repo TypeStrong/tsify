@@ -121,6 +121,7 @@ MIT
 
 # Changelog
 
+* 0.15.5 - Used `TypeStrong/tsconfig` for parsing `tsconfig.json` to add support for `exclude` and more.
 * 0.15.4 - Fixed some compilation failures introduced by v0.14.3.
 * 0.15.3 - Added support for the `--global` flag to use **tsify** as a global transform.
 * 0.15.2 - Added support for the `files` property of `tsconfig.json`.

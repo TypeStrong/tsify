@@ -330,12 +330,27 @@ test('including .d.ts file via tsconfig', function (t) {
 	});
 });
 
+test('with shared tsconfig.json in higher directory', function (t) {
+	process.chdir('./test/sharedTsconfig/project');
+	run({
+		bOpts: { entries: ['./x.ts'] }
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'Doctor',
+			'Seuss'
+		]);
+		expectMappedToken(t, 'x.ts', actual, 'x.thing1');
+		process.chdir('../../..');
+		t.end();
+	});
+});
+
 test('with files outside cwd', function (t) {
 	process.chdir('./test/filesOutsideCwd/cwd');
 	run({
 		bOpts: { entries: ['./x.ts'] }
 	}, function (errors, actual) {
-		console.log(actual);
 		expectNoErrors(t, errors);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -575,8 +590,12 @@ function expectConsoleOutputFromScript(t, src, expected) {
 
 	var actual = [];
 	var sandbox = { console: { log: function (str) { actual.push(str); }}};
-	vm.runInNewContext(src, sandbox);
-	t.deepEqual(actual, expected, 'Should have expected console.log output');
+	try {
+		vm.runInNewContext(src, sandbox);
+		t.deepEqual(actual, expected, 'Should have expected console.log output');
+	} catch (err) {
+		t.fail(err);
+	}
 }
 
 function expectMappedToken(t, srcFile, mapSourceFile, compiled, token) {

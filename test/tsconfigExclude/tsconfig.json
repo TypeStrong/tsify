@@ -1,0 +1,3 @@
+{
+	"exclude": ["broken.d.ts"]
+}

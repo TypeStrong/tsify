@@ -128,22 +128,6 @@ test('with tsconfig.json', function (t) {
 	});
 });
 
-test('exclude setting in tsconfig.json', function (t) {
-	process.chdir('./test/tsconfigExclude');
-	run({
-		bOpts: { entries: ['./x.ts'] }
-	}, function (errors, actual) {
-		expectNoErrors(t, errors);
-		expectConsoleOutputFromScript(t, actual, [
-			'Doctor',
-			'Seuss'
-		]);
-		expectMappedToken(t, 'x.ts', actual, 'x.thing1');
-		process.chdir('../..');
-		t.end();
-	});
-});
-
 test('with multiple tsconfig.jsons (or is it tsconfigs.json?), finding default config', function (t) {
 	process.chdir('./test/multipleConfigs');
 	run({

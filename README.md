@@ -70,7 +70,7 @@ For use on the command line, use the flag `npm install -g`.
 tsify will automatically read options from `tsconfig.json`.  However, some options from this file will be ignored:
 
 * `compilerOptions.declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
-* `compilerOptions.out` and `compilerOptions.outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes its intermediate JavaScript output to an internal memory store instead of to the filesystem.
+* `compilerOptions.out`, `compilerOptions.outDir`, and `compilerOptions.noEmit` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes its intermediate JavaScript output to an internal memory store instead of to the filesystem.
 * `files` - Use Browserify's file input options instead.  This is necessary because Browserify needs to know which file(s) are the entry points to your program.
 
 ### Watchify?

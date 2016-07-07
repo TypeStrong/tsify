@@ -30,8 +30,7 @@
     "commondir": "^1.0.1",
     "convert-source-map": "^1.1.0",
     "through2": "^2.0.0",
-    "tsconfig": "^2.2.0",
-    "typescript": "~1.8.7"
+    "tsconfig": "^2.2.0"
   },
   "devDependencies": {
     "babel-preset-react": "^6.5.0",
@@ -45,6 +44,7 @@
     "source-map": "^0.5.3",
     "tape": "^4.0.0",
     "test-peer-range": "^1.0.1",
+    "typescript": "~1.8.7",
     "watchify": "^3.2.1"
   },
   "peerDependencies": {

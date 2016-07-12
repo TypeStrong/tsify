@@ -1,3 +1,5 @@
+'use strict';
+
 var fs      = require('fs');
 var through = require('through2');
 var path    = require('path');

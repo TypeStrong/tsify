@@ -1,6 +1,7 @@
 'use strict';
 
 var fs      = require('fs');
+var log     = require('util').debuglog(require('./package').name);
 var through = require('through2');
 var path    = require('path');
 
@@ -62,6 +63,8 @@ function tsify(b, opts) {
 				})
 				.filter(function (file) { return file; })
 				.map(function (file) { return fs.realpathSync(file); });
+			log('Files from browserify entry points:');
+			entries.forEach(function (file) { log('  %s', file); });
 			tsifier.reset();
 			tsifier.generateCache(entries);
 			rows.forEach(function (row) { self.push(row); });

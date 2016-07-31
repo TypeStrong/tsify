@@ -62,6 +62,7 @@ For use on the command line, use the flag `npm install -g`.
 	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  Note that when using the API, you can pass either the name of the alternative compiler or a reference to it:
 		* `{ typescript: 'ntypescript' }`
 		* `{ typescript: require('typescript') }`, useful for when you want to use a different version of the official TypeScript compiler than the one packaged with tsify.
+	* `--project` - This allows you to specify the path that will be used when searching for the `tsconfig.json` file. You can pass either the path to a directory or to the `tsconfig.json` file itself.
 
 # Does this work with...
 

@@ -57,12 +57,12 @@ For use on the command line, use the flag `npm install -g`.
 * **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
 	* `-d, --declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
+* **tsify** supports the TypeScript compiler's `-p, --project` option which allows you to specify the path that will be used when searching for the `tsconfig.json` file. You can pass either the path to a directory or to the `tsconfig.json` file itself.
 * **tsify** supports the following extra options:
 	* `--global` - This will set up **tsify** as a global transform.  See the [Browserify docs](https://github.com/substack/node-browserify#btransformtr-opts) for the implications of this flag.
 	* `--typescript` - This allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript).  Note that when using the API, you can pass either the name of the alternative compiler or a reference to it:
 		* `{ typescript: 'ntypescript' }`
 		* `{ typescript: require('typescript') }`, useful for when you want to use a different version of the official TypeScript compiler than the one packaged with tsify.
-	* `--project` - This allows you to specify the path that will be used when searching for the `tsconfig.json` file. You can pass either the path to a directory or to the `tsconfig.json` file itself.
 
 # Does this work with...
 

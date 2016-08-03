@@ -122,6 +122,7 @@ MIT
 
 # Changelog
 
+* 1.0.2 - Added support for the TypeScript compiler's short-name, command-line options (e.g. `-p`).
 * 1.0.1 - On Windows, sometimes, the Browserify `basedir` contains backslashes that need normalization for findConfigFile to work correctly.
 * 1.0.0 - **Breaking**: TypeScript is now a `devDependency` so we don't install one for you. Please run `npm install typescript --save-dev` in your project to use whatever version you want.
 * 0.16.0 - Reinstated changes from 0.15.5.

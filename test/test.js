@@ -101,6 +101,27 @@ test('non-TS main file', function (t) {
 	});
 });
 
+test('non-TS main file and nested dependencies', function (t) {
+
+	// The workaround mentioned in issue #148 - an empty TS file in the root -
+	// is no longer required.
+
+	process.chdir('./test/withJsRootAndNestedDeps');
+	run({
+		bOpts: { entries: ['./x.js'] }
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'hello world',
+			'222'
+		]);
+		expectMappedToken(t, 'nested/y.ts', actual, 'console.log(message)');
+		expectMappedToken(t, 'nested/twice/z.ts', actual, '111');
+		process.chdir('../..');
+		t.end();
+	});
+});
+
 test('with adjacent compiled files', function (t) {
 	run({
 		bOpts: { entries: ['./test/withAdjacentCompiledFiles/x.ts'] }

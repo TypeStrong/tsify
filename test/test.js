@@ -103,9 +103,8 @@ test('non-TS main file', function (t) {
 
 test('non-TS main file and nested dependencies', function (t) {
 
-	// This test demonstrates the workaround mentioned in issue #148. Without
-	// the empty.ts file, this test will fail. Note that a tsconfig.json is
-	// also required - so that empty.ts is found.
+	// The workaround mentioned in issue #148 - an empty TS file in the root -
+	// is no longer required.
 
 	process.chdir('./test/withJsRootAndNestedDeps');
 	run({

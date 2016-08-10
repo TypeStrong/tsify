@@ -6,6 +6,10 @@ var through  = require('through2');
 var path     = require('path');
 
 function tsify(b, opts) {
+
+	if (typeof b === 'string') {
+		throw new Error('tsify appears to have been configured as a transform; it must be configured as a plugin.');
+	}
 	var ts = opts.typescript || require('typescript');
 	if (typeof ts === 'string' || ts instanceof String) {
 		ts = require(ts);

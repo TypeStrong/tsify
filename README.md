@@ -122,6 +122,11 @@ MIT
 
 # Changelog
 
+* 1.0.4 - Fixed numerous bugs:
+    * Refactored to use canonical file names, fixing #122, #135, #148, #150 and #161.
+    * Refactored to avoid having to infer the TypeScript root, fixing #152.
+    * Misconfiguration of `tsify` as a transform now results in an explicit error.
+    * Internal errors that previously went unreported are now emitted to Browserify.
 * 1.0.3 - Fixed a bug introduced in 1.0.2 (that resulted in the `target` being set to `ES3`).
 * 1.0.2 - Added support for the TypeScript compiler's short-name, command-line options (e.g. `-p`).
 * 1.0.1 - On Windows, sometimes, the Browserify `basedir` contains backslashes that need normalization for findConfigFile to work correctly.

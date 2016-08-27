@@ -1,9 +1,9 @@
 {
-  "name": "tsify-greeter",
+  "name": "tsify-js",
   "version": "0.0.0",
-  "description": "tsify Sample: Greeter",
+  "description": "tsify Sample: JS",
   "scripts": {
-    "build-cli": "browserify -p tsify src/main.ts",
+    "build-cli": "browserify -p [ tsify --allowJs ] src/main.js",
     "build-script": "node ./build.js"
   },
   "author": "Greg Smith <smr.kyu@gmail.com> (http://github.com/smrq)",

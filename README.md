@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 1.0.5 - Fixed a bug where empty output resulted in an error.
 * 1.0.4 - Fixed numerous bugs:
     * Refactored to use canonical file names, fixing [#122](//github.com/TypeStrong/tsify/issues/122), [#135](//github.com/TypeStrong/tsify/issues/135), [#148](//github.com/TypeStrong/tsify/issues/148), [#150](//github.com/TypeStrong/tsify/issues/150) and [#161](//github.com/TypeStrong/tsify/issues/161).
     * Refactored to avoid having to infer the TypeScript root, fixing [#152](//github.com/TypeStrong/tsify/issues/152).

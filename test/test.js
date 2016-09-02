@@ -513,11 +513,25 @@ test('with custom compiler', function (t) {
 	});
 });
 
+test('with empty output', function (t) {
+	process.chdir('./test/emptyOutput');
+	run({
+		bOpts: { debug: false, entries: ['./x.ts'] },
+		tsifyOpts: {}
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
 // Test helpers
 
 function run(config, cb) {
 	var bOpts = config.bOpts || {};
-	bOpts.debug = true;
+	if (bOpts.debug === undefined) {
+		bOpts.debug = true;
+	}
 
 	var tsifyOpts = config.tsifyOpts || {};
 	var beforeBundle = config.beforeBundle || function() {};

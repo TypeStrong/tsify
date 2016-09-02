@@ -44,7 +44,13 @@ Just plain ol' [npm](https://npmjs.org/) installation:
 npm install browserify
 ```
 
-### 2. Install tsify
+### 2. Install typescript
+
+``` sh
+npm install typescript
+```
+
+### 3. Install tsify
 ``` sh
 npm install tsify
 ```

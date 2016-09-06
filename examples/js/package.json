@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "tsify Sample: JS",
   "scripts": {
-    "build-cli": "browserify -p [ tsify --allowJs ] src/main.js",
-    "build-script": "node ./build.js"
+    "build-cli": "browserify -p [ tsify --allowJs ] src/main.js > public/bundle.js",
+    "build-script": "node ./build.js > public/bundle.js"
   },
   "author": "Greg Smith <smr.kyu@gmail.com> (http://github.com/smrq)",
   "license": "MIT",

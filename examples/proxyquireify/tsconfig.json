@@ -1,0 +1,9 @@
+{
+	"files": [
+		"src/bar.ts",
+		"src/baz.ts",
+		"src/foo.ts",
+		"src/foo-spec.ts",
+		"typings/index.d.ts"
+	]
+}

@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "tsify Sample: Greeter",
   "scripts": {
-    "build-cli": "browserify -p tsify src/main.ts",
-    "build-script": "node ./build.js"
+    "build-cli": "browserify -p tsify src/main.ts > public/bundle.js",
+    "build-script": "node ./build.js > public/bundle.js"
   },
   "author": "Greg Smith <smr.kyu@gmail.com> (http://github.com/smrq)",
   "license": "MIT",

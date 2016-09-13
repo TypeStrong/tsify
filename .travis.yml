@@ -1,13 +1,5 @@
 language: node_js
 node_js:
-- '6'
-- '0.12'
-deploy:
-  provider: npm
-  email: smr.kyu@gmail.com
-  api_key:
-    secure: JF6/Vg2m1OpPqOVWhj870leTCCCz9vtjOxp6ncFf06iZ5Dn9oenoC6eJ8xJ5VcdO648kyQPBKzxqQbwJuN+DqEIXzDjzlXp3xiEAJhxzQ5iS6S7JhDRTKJYe2QKPApNwL/LJdK56ciJE6aOevlO37Xdy4LVemd+jQIay0nTzlm4=
-  on:
-    tags: true
-    all_branches: true
+  - '6'
+  - '0.12'
 sudo: false

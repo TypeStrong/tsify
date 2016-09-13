@@ -29,6 +29,7 @@
   "dependencies": {
     "convert-source-map": "^1.1.0",
     "fs.realpath": "^1.0.0",
+    "object-assign": "^4.1.0",
     "semver": "^5.1.0",
     "through2": "^2.0.0",
     "tsconfig": "^2.2.0"

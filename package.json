@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "convert-source-map": "^1.1.0",
+    "fs-file-name-sensitive": "^0.1.2",
     "fs.realpath": "^1.0.0",
     "object-assign": "^4.1.0",
     "semver": "^5.1.0",

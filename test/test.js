@@ -12,14 +12,33 @@ var os = require('os');
 var path = require('path');
 var semver = require('semver');
 var sm = require('source-map');
-var watchify = require('watchify');
+var typescript = require('typescript');
 var vm = require('vm');
+var watchify = require('watchify');
 
 var tsify = require('..');
 
 var buildTimeout = 5000;
 
 // Tests
+
+test('host', function (t) {
+
+	var compilerHost = typescript.createCompilerHost({});
+	var methods = Object.keys(compilerHost).filter(function (method) {
+		return typeof compilerHost[method] === "function";
+	});
+
+	var exceptions = ['getDefaultLibLocation'];
+	var Host = require('../lib/Host')(typescript);
+
+	methods.forEach(function (method) {
+		if (exceptions.indexOf(method) === -1) {
+			t.assert(Host.prototype[method], 'implements ' + method);
+		}
+	});
+	t.end();
+});
 
 test('no arguments', function (t) {
 	run({
@@ -518,7 +537,7 @@ test('with empty output', function (t) {
 	run({
 		bOpts: { debug: false, entries: ['./x.ts'] },
 		tsifyOpts: {}
-	}, function (errors, actual) {
+	}, function (errors) {
 		expectNoErrors(t, errors);
 		process.chdir('../..');
 		t.end();

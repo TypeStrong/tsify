@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 1.0.9 - Implemented additional compiler host methods to support the default inclusion of visible `@types` modules.
 * 1.0.8 - Implemented file system case-sensitivity detection, fixing [#200](//github.com/TypeStrong/tsify/issues/200).
 * 1.0.7 - Replaced `Object.assign` with [`object-assign`](https://github.com/sindresorhus/object-assign) for Node 0.12 compatibility.
 * 1.0.6 - Fixed a bug in which TypeScript 2 libraries (specified using the `lib` option) were left out of the compilation when bundling on Windows.

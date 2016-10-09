@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 2.0.1 - Fixed a bug in which the `include` option was broken if `tsconfig.json` was not in the current directory.
 * 2.0.0 - **Breaking**: updated to the latest `tsconfig`, so `filesGlob` is no longer supported. Use TypeScript 2's `exclude` and `include` options instead.
 * 1.0.9 - Implemented additional compiler host methods to support the default inclusion of visible `@types` modules.
 * 1.0.8 - Implemented file system case-sensitivity detection, fixing [#200](//github.com/TypeStrong/tsify/issues/200).

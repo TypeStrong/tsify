@@ -18,7 +18,7 @@ var watchify = require('watchify');
 
 var tsify = require('..');
 
-var buildTimeout = 5000;
+var buildTimeout = 8000;
 
 // Tests
 

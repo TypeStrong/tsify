@@ -170,6 +170,24 @@ test('with tsconfig.json', function (t) {
 	});
 });
 
+test('with tsconfig via project option', function (t) {
+	process.chdir('./test/tsconfig');
+	var project = {
+		compilerOptions: {
+			noImplicitAny: false
+		}
+	};
+	run({
+		bOpts: { entries: ['./x.ts'] },
+		tsifyOpts: { project: project }
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [3]);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
 test('exclude setting in tsconfig.json', function (t) {
 	process.chdir('./test/tsconfigExclude');
 	run({

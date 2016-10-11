@@ -63,7 +63,7 @@ For use on the command line, use the flag `npm install -g`.
 * **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
 	* `-d, --declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
-* **tsify** supports the TypeScript compiler's `-p, --project` option which allows you to specify the path that will be used when searching for the `tsconfig.json` file. You can pass either the path to a directory or to the `tsconfig.json` file itself.
+* **tsify** supports the TypeScript compiler's `-p, --project` option which allows you to specify the path that will be used when searching for the `tsconfig.json` file. You can pass either the path to a directory or to the `tsconfig.json` file itself. (When using the API, the `project` option can specify either a path to a directory or file, or the JSON content of a `tsconfig.json` file.)
 * **tsify** supports the following extra options:
 	* `--global` - This will set up **tsify** as a global transform.  See the [Browserify docs](https://github.com/substack/node-browserify#btransformtr-opts) for the implications of this flag.
 	* `--typescript` - By default we just do `require('typescript')` to pickup whichever version you installed. However, this option allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript). Note that when using the API, you can pass either the name of the alternative compiler or a reference to it:
@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 2.0.2 - Added support for specifying the `project` option using the JSON content of a `tsconfig.json` file.
 * 2.0.1 - Fixed a bug in which the `include` option was broken if `tsconfig.json` was not in the current directory.
 * 2.0.0 - **Breaking**: updated to the latest `tsconfig`, so `filesGlob` is no longer supported. Use TypeScript 2's `exclude` and `include` options instead.
 * 1.0.9 - Implemented additional compiler host methods to support the default inclusion of visible `@types` modules.

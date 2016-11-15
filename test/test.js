@@ -20,6 +20,15 @@ var tsify = require('..');
 
 var buildTimeout = 8000;
 
+var caseSensitive;
+
+try {
+	fs.accessSync(path.join(__dirname, path.basename(__filename).toUpperCase()), fs.constants.R_OK);
+	caseSensitive = false;
+} catch (error) {
+	caseSensitive = true;
+}
+
 // Tests
 
 test('host', function (t) {
@@ -296,9 +305,14 @@ test('syntax error', function (t) {
 	run({
 		bOpts: { entries: ['./test/syntaxError/x.ts'] }
 	}, function (errors, actual) {
+		var fileName = (caseSensitive) 
+			? 'test/syntaxError/x.ts' 
+			: 'test/syntaxerror/x.ts'
+		;
+
 		expectErrors(t, errors, [
-			{ name: 'TS1005', line: 1, column: 9, file: 'test/syntaxError/x.ts' },
-			{ name: 'TS1005', line: 2, column: 9, file: 'test/syntaxError/x.ts' }
+			{ name: 'TS1005', line: 1, column: 9, file: fileName },
+			{ name: 'TS1005', line: 2, column: 9, file: fileName }
 		]);
 		expectNoOutput(t, actual);
 		t.end();
@@ -309,8 +323,13 @@ test('type error', function (t) {
 	run({
 		bOpts: { entries: ['./test/typeError/x.ts'] }
 	}, function (errors, actual) {
+		var fileName = (caseSensitive) 
+			? 'test/typeError/x.ts' 
+			: 'test/typeerror/x.ts'
+		;
+
 		expectErrors(t, errors, [
-			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
+			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);
 		expectConsoleOutputFromScript(t, actual, [
 			'hello world',
@@ -328,8 +347,13 @@ test('type error with noEmitOnError', function (t) {
 		bOpts: { entries: ['./test/typeError/x.ts'] },
 		tsifyOpts: { noEmitOnError: true }
 	}, function (errors, actual) {
+		var fileName = (caseSensitive) 
+			? 'test/typeError/x.ts' 
+			: 'test/typeerror/x.ts'
+		;
+
 		expectErrors(t, errors, [
-			{ name: 'TS2345', line: 4, column: 3, file: 'test/typeError/x.ts' }
+			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);
 		expectNoOutput(t, actual);
 		t.end();

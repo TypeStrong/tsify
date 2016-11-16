@@ -17,17 +17,9 @@ var vm = require('vm');
 var watchify = require('watchify');
 
 var tsify = require('..');
+var Host = require('../lib/Host')(typescript);
 
 var buildTimeout = 8000;
-
-var caseSensitive;
-
-try {
-	fs.accessSync(path.join(__dirname, path.basename(__filename).toUpperCase()), fs.constants.R_OK);
-	caseSensitive = false;
-} catch (error) {
-	caseSensitive = true;
-}
 
 // Tests
 
@@ -38,11 +30,9 @@ test('host', function (t) {
 		return typeof compilerHost[method] === "function";
 	});
 
-	var exceptions = ['getDefaultLibLocation'];
-	var Host = require('../lib/Host')(typescript);
-
+	var ignore = ['getDefaultLibLocation'];
 	methods.forEach(function (method) {
-		if (exceptions.indexOf(method) === -1) {
+		if (ignore.indexOf(method) === -1) {
 			t.assert(Host.prototype[method], 'implements ' + method);
 		}
 	});
@@ -305,11 +295,7 @@ test('syntax error', function (t) {
 	run({
 		bOpts: { entries: ['./test/syntaxError/x.ts'] }
 	}, function (errors, actual) {
-		var fileName = (caseSensitive) 
-			? 'test/syntaxError/x.ts' 
-			: 'test/syntaxerror/x.ts'
-		;
-
+		var fileName = Host.getCanonicalFileName('test/syntaxError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS1005', line: 1, column: 9, file: fileName },
 			{ name: 'TS1005', line: 2, column: 9, file: fileName }
@@ -323,11 +309,7 @@ test('type error', function (t) {
 	run({
 		bOpts: { entries: ['./test/typeError/x.ts'] }
 	}, function (errors, actual) {
-		var fileName = (caseSensitive) 
-			? 'test/typeError/x.ts' 
-			: 'test/typeerror/x.ts'
-		;
-
+		var fileName = Host.getCanonicalFileName('test/typeError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);
@@ -347,11 +329,7 @@ test('type error with noEmitOnError', function (t) {
 		bOpts: { entries: ['./test/typeError/x.ts'] },
 		tsifyOpts: { noEmitOnError: true }
 	}, function (errors, actual) {
-		var fileName = (caseSensitive) 
-			? 'test/typeError/x.ts' 
-			: 'test/typeerror/x.ts'
-		;
-
+		var fileName = Host.getCanonicalFileName('test/typeError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);

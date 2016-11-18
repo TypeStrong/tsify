@@ -564,6 +564,63 @@ test('with empty output', function (t) {
 	});
 });
 
+test('with overriden excludes', function (t) {
+	process.chdir('./test/withFileOverrides');
+	run({
+		bOpts: { entries: ['./index.ts'] },
+		tsifyOpts: { exclude: [] }
+	}, function (errors, actual, files) {
+		expectNoErrors(t, errors);
+		expectFiles(t, files, {
+			'foo.ts': true,
+			'bar.ts': true,
+			'bar-exam.ts': true,
+			'bar-tender.ts': true,
+			'index.ts': true
+		});
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+test('with overriden files', function (t) {
+	process.chdir('./test/withFileOverrides');
+	run({
+		bOpts: { entries: ['./index.ts'] },
+		tsifyOpts: { files: [] }
+	}, function (errors, actual, files) {
+		expectNoErrors(t, errors);
+		expectFiles(t, files, {
+			'foo.ts': false,
+			'bar.ts': false,
+			'bar-exam.ts': false,
+			'bar-tender.ts': true,
+			'index.ts': true
+		});
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+test('with overriden includes', function (t) {
+	process.chdir('./test/withFileOverrides');
+	run({
+		bOpts: { entries: ['./index.ts'] },
+		tsifyOpts: { include: [] }
+	}, function (errors, actual, files) {
+		expectNoErrors(t, errors);
+		expectFiles(t, files, {
+			'foo.ts': true,
+			'bar.ts': true,
+			'bar-exam.ts': false,
+			'bar-tender.ts': false,
+			'index.ts': true
+		});
+		process.chdir('../..');
+		t.end();
+	});
+});
+
 // Test helpers
 
 function run(config, cb) {
@@ -575,7 +632,11 @@ function run(config, cb) {
 	var tsifyOpts = config.tsifyOpts || {};
 	var beforeBundle = config.beforeBundle || function() {};
 
+	var files = []
 	var b = browserify(bOpts)
+		.on('file', function (file) {
+			files.push(file);
+		})
 		.plugin(tsify, tsifyOpts);
 	beforeBundle(b);
 
@@ -589,14 +650,14 @@ function run(config, cb) {
 			if (calledBack)
 				throw new Error('Bundling completed after build timeout expired');
 			calledBack = true;
-			cb(errors, actual.toString());
+			cb(errors, actual.toString(), files);
 		}));
 
 	setTimeout(function () {
 		if (calledBack)
 			return;
 		calledBack = true;
-		cb(errors, null);
+		cb(errors, null, null);
 	}, buildTimeout);
 }
 
@@ -731,4 +792,25 @@ function countLinesUntil(str, index) {
 function indexToLineAndColumn(src, index) {
 	var indexOfLine = src.lastIndexOf('\n', index-1) + 1;
 	return { line: countLinesUntil(src, indexOfLine), column: index - indexOfLine };
+}
+
+function expectFiles(t, emitted, expected) {
+
+	Object.keys(expected).forEach(function (key) {
+		var index = findIndex(key);
+		if (expected[key]) {
+			t.notEqual(index, -1, 'Should emit ' + key);
+		} else {
+			t.equal(index, -1, 'Should not emit ' + key);
+		}
+	});
+
+	function findIndex(file) {
+		for (var i = 0; i < emitted.length; ++i) {
+			if (new RegExp(file + '$').test(emitted[i])) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }

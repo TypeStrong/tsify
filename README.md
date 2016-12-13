@@ -122,6 +122,10 @@ There are several TypeScript compilation transforms available on npm, all with v
 
 **tsify** avoids this problem by using the power of plugins to perform a single compilation of the TypeScript source up-front, using Browserify to glue together the resulting files.
 
+# Why tsify and not vanilla browserify on js files output from tsc?
+
+If you wanted to, you could use tsc to output js files which could then be bundled by browserify. Existing projects with well established browserify-based build configurations can add a browserify plugin to perform the TypeScript transpilation. Which is a much smaller change than re-configuring said projects to use tsc to output intermediate js files.
+
 # License
 
 MIT

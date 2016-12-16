@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 2.0.5 - The fix in 2.0.4 was too aggressive, as it filtered too many Browserify 'rows'. Now, only 'rows' from stream sources are filtered.
 * 2.0.4 - Fixed a bug that broke Browserify's [require](https://github.com/substack/node-browserify#brequirefile-opts) option.
 * 2.0.3 - Fixed a bug related to case-sensitive paths and normalized more path parameters.
 * 2.0.2 - Added support for specifying the `project` option using the JSON content of a `tsconfig.json` file.

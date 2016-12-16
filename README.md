@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 2.0.4 - Fixed a bug that broke Browserify's [require](https://github.com/substack/node-browserify#brequirefile-opts) option.
 * 2.0.3 - Fixed a bug related to case-sensitive paths and normalized more path parameters.
 * 2.0.2 - Added support for specifying the `project` option using the JSON content of a `tsconfig.json` file.
 * 2.0.1 - Fixed a bug in which the `include` option was broken if `tsconfig.json` was not in the current directory.

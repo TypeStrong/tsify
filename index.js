@@ -58,7 +58,7 @@ function tsify(b, opts) {
 		function flush(next) {
 			var self = this;
 			var entries = rows
-				.filter(function (row) { return row.entry; })
+				.filter(function (row) { return !row.source; })
 				.map(function (row) {
 					if (row.basedir && (row.file || row.id)) {
 						return path.resolve(row.basedir, row.file || row.id);

@@ -43,6 +43,7 @@
     "fs-extra": "^0.30.0",
     "node-foo": "^0.2.3",
     "source-map": "^0.5.3",
+    "string-to-stream": "^1.1.0",
     "tape": "^4.0.0",
     "test-peer-range": "^1.0.1",
     "typescript": "^2.0.3",

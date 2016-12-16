@@ -12,6 +12,7 @@ var os = require('os');
 var path = require('path');
 var semver = require('semver');
 var sm = require('source-map');
+var stringToStream = require('string-to-stream');
 var typescript = require('typescript');
 var vm = require('vm');
 var watchify = require('watchify');
@@ -559,6 +560,25 @@ test('with empty output', function (t) {
 		tsifyOpts: {}
 	}, function (errors) {
 		expectNoErrors(t, errors);
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+test('with required stream', function (t) {
+	process.chdir('./test/withRequiredStream');
+	run({
+		bOpts: { debug: false, entries: ['./x.ts'] },
+		tsifyOpts: {},
+		beforeBundle: function (b) {
+			b.exclude('streamed');
+			b.require(stringToStream('exports.name = "streamed";'), { expose: 'streamed', basedir: './' });
+		}
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'streamed'
+		]);
 		process.chdir('../..');
 		t.end();
 	});

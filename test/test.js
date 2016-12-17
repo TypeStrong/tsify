@@ -569,7 +569,7 @@ test('with required stream', function (t) {
 	process.chdir('./test/withRequiredStream');
 	run({
 		bOpts: { debug: false, entries: ['./x.ts'] },
-		tsifyOpts: {},
+		tsifyOpts: { allowJs: true },
 		beforeBundle: function (b) {
 			b.exclude('streamed');
 			b.require(stringToStream('exports.name = "streamed";'), { expose: 'streamed', basedir: './' });

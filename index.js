@@ -58,13 +58,17 @@ function tsify(b, opts) {
 		function flush(next) {
 			var self = this;
 			var entries = rows
-				.filter(function (row) { return !row.source; })
+				.filter(function (row) { return row.source === undefined; })
 				.map(function (row) {
-					if (row.basedir && (row.file || row.id)) {
-						return path.resolve(row.basedir, row.file || row.id);
-					} else {
-						return row.file || row.id;
+					var file = row.file || row.id;
+					if (file) {
+						if (row.basedir) {
+							return path.resolve(row.basedir, file);
+						} else if (path.isAbsolute(file)) {
+							return file;
+						}
 					}
+					return null;
 				})
 				.filter(function (file) { return file; })
 				.map(function (file) { return realpath.realpathSync(file); });

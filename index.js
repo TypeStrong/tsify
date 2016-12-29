@@ -57,20 +57,35 @@ function tsify(b, opts) {
 
 		function flush(next) {
 			var self = this;
-			var entries = rows
+			var ignoredFiles = [];
+			var entryFiles = rows
 				.map(function (row) {
-					if (row.basedir && (row.file || row.id)) {
-						return path.resolve(row.basedir, row.file || row.id);
-					} else {
-						return row.file || row.id;
+					var file = row.file || row.id;
+					if (file) {
+						if (row.source !== undefined) {
+							ignoredFiles.push(file);
+						} else if (row.basedir) {
+							return path.resolve(row.basedir, file);
+						} else if (path.isAbsolute(file)) {
+							return file;
+						} else {
+							ignoredFiles.push(file);
+						}
 					}
+					return null;
 				})
 				.filter(function (file) { return file; })
 				.map(function (file) { return realpath.realpathSync(file); });
-			log('Files from browserify entry points:');
-			entries.forEach(function (file) { log('  %s', file); });
+			if (entryFiles.length) {
+				log('Files from browserify entry points:');
+				entryFiles.forEach(function (file) { log('  %s', file); });
+			}
+			if (ignoredFiles.length) {
+				log('Ignored browserify entry points:');
+				ignoredFiles.forEach(function (file) { log('  %s', file); });
+			}
 			tsifier.reset();
-			tsifier.generateCache(entries);
+			tsifier.generateCache(entryFiles, ignoredFiles);
 			rows.forEach(function (row) { self.push(row); });
 			self.push(null);
 			next();

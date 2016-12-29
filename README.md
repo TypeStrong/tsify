@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 3.0.0 - **Breaking**: Dropped support for Browserify < 10.x. Re-instated changes from 2.0.4 to 2.0.7.
 * 2.0.8 - Reverted to 2.0.3. Changes introduced from 2.0.4 to 2.0.7 have issues with early versions of Browserify.
 * 2.0.7 - Tracked files for filtered stream and module-name 'rows'. Using `allowJs` no longer causes problems with streams.
 * 2.0.6 - Filtered module-name 'rows', too, as filtering only source 'rows' re-broke Browserify's [require](https://github.com/substack/node-browserify#brequirefile-opts) option.

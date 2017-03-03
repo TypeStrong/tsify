@@ -1,0 +1,5 @@
+{
+  "ambientDependencies": {
+    "mathjs": "github:DefinitelyTyped/DefinitelyTyped/mathjs/mathjs.d.ts#79c2ead09a395f5273d55e104e1293586a4b7914"
+  }
+}

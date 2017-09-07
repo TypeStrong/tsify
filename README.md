@@ -128,6 +128,7 @@ MIT
 
 # Changelog
 
+* 3.0.2 - Added support for the `forceConsistentCasingInFilenames` compiler option.
 * 3.0.1 - Fixed an error with file system case sensitivity detection.
 * 3.0.0 - **Breaking**: Dropped support for Browserify < 10.x. Re-instated changes from 2.0.4 to 2.0.7.
 * 2.0.8 - Reverted to 2.0.3. Changes introduced from 2.0.4 to 2.0.7 have issues with early versions of Browserify.

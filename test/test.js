@@ -296,7 +296,7 @@ test('syntax error', function (t) {
 	run({
 		bOpts: { entries: ['./test/syntaxError/x.ts'] }
 	}, function (errors, actual) {
-		var fileName = Host.getCanonicalFileName('test/syntaxError/x.ts');
+		var fileName = Host._getCanonicalFileName('test/syntaxError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS1005', line: 1, column: 9, file: fileName },
 			{ name: 'TS1005', line: 2, column: 9, file: fileName }
@@ -310,7 +310,7 @@ test('type error', function (t) {
 	run({
 		bOpts: { entries: ['./test/typeError/x.ts'] }
 	}, function (errors, actual) {
-		var fileName = Host.getCanonicalFileName('test/typeError/x.ts');
+		var fileName = Host._getCanonicalFileName('test/typeError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);
@@ -330,7 +330,7 @@ test('type error with noEmitOnError', function (t) {
 		bOpts: { entries: ['./test/typeError/x.ts'] },
 		tsifyOpts: { noEmitOnError: true }
 	}, function (errors, actual) {
-		var fileName = Host.getCanonicalFileName('test/typeError/x.ts');
+		var fileName = Host._getCanonicalFileName('test/typeError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);

@@ -129,6 +129,7 @@ MIT
 
 # Changelog
 
+* 3.0.4 - Added support for overriding the `files`, `excludes` and `includes` options.
 * 3.0.3 - Reverted 3.0.2.
 * 3.0.2 - Added support for the `forceConsistentCasingInFilenames` compiler option.
 * 3.0.1 - Fixed an error with file system case sensitivity detection.

@@ -12,6 +12,7 @@ var os = require('os');
 var path = require('path');
 var semver = require('semver');
 var sm = require('source-map');
+var stringToStream = require('string-to-stream');
 var typescript = require('typescript');
 var vm = require('vm');
 var watchify = require('watchify');
@@ -295,7 +296,7 @@ test('syntax error', function (t) {
 	run({
 		bOpts: { entries: ['./test/syntaxError/x.ts'] }
 	}, function (errors, actual) {
-		var fileName = Host.getCanonicalFileName('test/syntaxError/x.ts');
+		var fileName = Host._getCanonicalFileName('test/syntaxError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS1005', line: 1, column: 9, file: fileName },
 			{ name: 'TS1005', line: 2, column: 9, file: fileName }
@@ -309,7 +310,7 @@ test('type error', function (t) {
 	run({
 		bOpts: { entries: ['./test/typeError/x.ts'] }
 	}, function (errors, actual) {
-		var fileName = Host.getCanonicalFileName('test/typeError/x.ts');
+		var fileName = Host._getCanonicalFileName('test/typeError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);
@@ -329,7 +330,7 @@ test('type error with noEmitOnError', function (t) {
 		bOpts: { entries: ['./test/typeError/x.ts'] },
 		tsifyOpts: { noEmitOnError: true }
 	}, function (errors, actual) {
-		var fileName = Host.getCanonicalFileName('test/typeError/x.ts');
+		var fileName = Host._getCanonicalFileName('test/typeError/x.ts');
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);
@@ -616,6 +617,25 @@ test('with overriden includes', function (t) {
 			'bar-tender.ts': false,
 			'index.ts': true
 		});
+		process.chdir('../..');
+		t.end();
+	});
+});
+
+test('with required stream', function (t) {
+	process.chdir('./test/withRequiredStream');
+	run({
+		bOpts: { debug: false, entries: ['./x.ts'] },
+		tsifyOpts: { allowJs: true },
+		beforeBundle: function (b) {
+			b.exclude('streamed');
+			b.require(stringToStream('exports.name = "streamed";'), { expose: 'streamed', basedir: './' });
+		}
+	}, function (errors, actual) {
+		expectNoErrors(t, errors);
+		expectConsoleOutputFromScript(t, actual, [
+			'streamed'
+		]);
 		process.chdir('../..');
 		t.end();
 	});

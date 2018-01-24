@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "node test/test.js"
+    "test-latest": "node test/test.js",
+    "test": "tav"
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
     "source-map": "^0.5.3",
     "string-to-stream": "^1.1.0",
     "tape": "^4.0.0",
+    "test-all-versions": "^3.3.1",
     "typescript": "~2.0.3",
     "watchify": "^3.2.1"
   },

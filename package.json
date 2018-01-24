@@ -34,9 +34,10 @@
     "tsconfig": "^5.0.3"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
     "babel-preset-react": "^6.5.0",
-    "babelify": "^7.2.0",
-    "browserify": "^14.4.0",
+    "babelify": "^8.0.0",
+    "browserify": "^15.0.0",
     "eslint": "^4.6.1",
     "event-stream": "^3.3.1",
     "fs-extra": "^5.0.0",

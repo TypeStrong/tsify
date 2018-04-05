@@ -64,7 +64,7 @@ For use on the command line, use the flag `npm install -g`.
 	* `-d, --declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
 * **tsify** supports the TypeScript compiler's `-p, --project` option which allows you to specify the path that will be used when searching for the `tsconfig.json` file. You can pass either the path to a directory or to the `tsconfig.json` file itself. (When using the API, the `project` option can specify either a path to a directory or file, or the JSON content of a `tsconfig.json` file.)
-* **tsify** supports overriding the `files`, `excludes` and `includes` options. In particular, if `"files": []` is specified, only the Browserify entry points (and their dependencies) are passed to TypeScript for compilation.
+* **tsify** supports overriding the `files`, `exclude` and `include` options. In particular, if `"files": []` is specified, only the Browserify entry points (and their dependencies) are passed to TypeScript for compilation.
 * **tsify** supports the following extra options:
 	* `--global` - This will set up **tsify** as a global transform.  See the [Browserify docs](https://github.com/substack/node-browserify#btransformtr-opts) for the implications of this flag.
 	* `--typescript` - By default we just do `require('typescript')` to pickup whichever version you installed. However, this option allows you to pass in a different TypeScript compiler, such as [NTypeScript](https://github.com/TypeStrong/ntypescript). Note that when using the API, you can pass either the name of the alternative compiler or a reference to it:
@@ -129,7 +129,7 @@ MIT
 
 # Changelog
 
-* 3.0.4 - Added support for overriding the `files`, `excludes` and `includes` options.
+* 3.0.4 - Added support for overriding the `files`, `exclude` and `include` options.
 * 3.0.3 - Reverted 3.0.2.
 * 3.0.2 - Added support for the `forceConsistentCasingInFilenames` compiler option.
 * 3.0.1 - Fixed an error with file system case sensitivity detection.

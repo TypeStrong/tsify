@@ -129,6 +129,7 @@ MIT
 
 # Changelog
 
+* 4.0.0 - Applied changes from 3.0.2: added support for the `forceConsistentCasingInFilenames` compiler option.
 * 3.0.4 - Added support for overriding the `files`, `exclude` and `include` options.
 * 3.0.3 - Reverted 3.0.2.
 * 3.0.2 - Added support for the `forceConsistentCasingInFilenames` compiler option.

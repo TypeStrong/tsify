@@ -301,7 +301,6 @@ test('syntax error', function (t) {
 			{ name: 'TS1005', line: 1, column: 9, file: fileName },
 			{ name: 'TS1005', line: 2, column: 9, file: fileName }
 		]);
-		expectNoOutput(t, actual);
 		t.end();
 	});
 });
@@ -334,7 +333,6 @@ test('type error with noEmitOnError', function (t) {
 		expectErrors(t, errors, [
 			{ name: 'TS2345', line: 4, column: 3, file: fileName }
 		]);
-		expectNoOutput(t, actual);
 		t.end();
 	});
 });
@@ -752,10 +750,6 @@ function expectErrors(t, actual, expected) {
 		t.ok(actual[i].message.indexOf(expected[i].name) > -1,
 			'Error #' + i + ' message should contain error info');
 	}
-}
-
-function expectNoOutput(t, actual) {
-	t.equal(actual, null, 'Should have no compiled output');
 }
 
 function expectConsoleOutputFromScript(t, src, expected) {

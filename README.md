@@ -129,6 +129,7 @@ MIT
 
 # Changelog
 
+* 4.0.1 - Fix so that `watchify` does not stop listening.
 * 4.0.0 - Re-applied changes from 3.0.2: added support for the `forceConsistentCasingInFilenames` compiler option.
 * 3.0.4 - Added support for overriding the `files`, `exclude` and `include` options.
 * 3.0.3 - Reverted 3.0.2.

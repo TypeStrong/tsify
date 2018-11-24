@@ -30,12 +30,12 @@
     "convert-source-map": "^1.1.0",
     "fs.realpath": "^1.0.0",
     "object-assign": "^4.1.0",
-    "semver": "^5.1.0",
+    "semver": "^5.6.0",
     "through2": "^2.0.0",
     "tsconfig": "^5.0.3"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-preset-react": "^6.5.0",
     "babelify": "^8.0.0",
     "browserify": "^15.0.0",
@@ -44,11 +44,11 @@
     "fs-extra": "^5.0.0",
     "node-foo": "^0.2.3",
     "source-map": "^0.5.3",
-    "string-to-stream": "^1.1.0",
-    "tape": "^4.0.0",
-    "test-all-versions": "^3.3.1",
+    "string-to-stream": "^1.1.1",
+    "tape": "^4.9.1",
+    "test-all-versions": "^3.3.3",
     "typescript": "~2.0.3",
-    "watchify": "^3.2.1"
+    "watchify": "^3.11.0"
   },
   "peerDependencies": {
     "browserify": ">= 10.x",

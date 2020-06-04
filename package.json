@@ -3,6 +3,7 @@
   "version": "4.0.1",
   "description": "Browserify plugin for compiling Typescript",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "test-latest": "node test/test.js",

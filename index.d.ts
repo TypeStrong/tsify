@@ -4,10 +4,10 @@ import { CompilerOptions, ModuleKind, ScriptTarget } from "typescript";
 export interface Options extends CustomOptions, CompilerOptions {
 	typescript?: string | import("typescript");
 	global?: boolean;
-	m?: ts.ModuleKind;
-	p?: string | ts.CompilerOptions;
-	project?: string | ts.CompilerOptions;
-	t?: ts.ScriptTarget;
+	m?: ModuleKind;
+	p?: string | CompilerOptions;
+	project?: string | CompilerOptions;
+	t?: ScriptTarget;
 }
 
 function tsify(b: BrowserifyObject, opts: Options): any;

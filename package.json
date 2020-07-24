@@ -53,6 +53,6 @@
   },
   "peerDependencies": {
     "browserify": ">= 10.x",
-    "typescript": ">= 2.x"
+    "typescript": ">= 2.8"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "tsify",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Browserify plugin for compiling Typescript",
   "main": "index.js",
   "types": "index.d.ts",

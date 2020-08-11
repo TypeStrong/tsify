@@ -1,5 +1,6 @@
 import { BrowserifyObject, CustomOptions } from "browserify";
-import typescript, { CompilerOptions, ModuleKind, ScriptTarget } from "typescript";
+import * as typescript from "typescript";
+import { CompilerOptions, ModuleKind, ScriptTarget } from "typescript";
 
 // Provide local definition of Omit for compatibility with TypeScript <3.5
 type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;

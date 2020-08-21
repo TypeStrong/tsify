@@ -1,17 +1,18 @@
-import { BrowserifyObject, CustomOptions } from "browserify";
+// Note that @types/browserify is not used for a reason:
+// https://github.com/TypeStrong/tsify/issues/267
+
 import * as typescript from "typescript";
-import { CompilerOptions, ModuleKind, ScriptTarget } from "typescript";
 
-// Provide local definition of Omit for compatibility with TypeScript <3.5
-type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
-
-export interface Options extends CustomOptions, Omit<CompilerOptions, "project"> {
-	typescript?: string | typeof typescript;
+export interface Options {
+	exclude?: string[];
+	files?: string[];
 	global?: boolean;
-	m?: ModuleKind;
-	p?: string | CompilerOptions;
-	project?: string | CompilerOptions;
-	t?: ScriptTarget;
+	include?: string[];
+	m?: string;
+	p?: string | Record<string, any>;
+	project?: string | Record<string, any>;
+	t?: string;
+	typescript?: string | typeof typescript;
 }
 
-export default function tsify(b: BrowserifyObject, opts: Options): any;
+export default function tsify(b: any, opts: Options): any;

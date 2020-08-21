@@ -129,6 +129,7 @@ MIT
 
 # Changelog
 
+* 5.0.2 - Remove `@types/browserify` and incorrect/undocumented use of TypeScript types in `tsify` signature.
 * 5.0.1 - Remove default import from `index.d.ts` and add `@types/browserify` dependency.
 * 5.0.0 - **Breaking**: Fix type declarations for TypeScript 4 compatibility. With this fix, the TypeScript version must be 2.8 or above.
 * 4.0.2 - Add `types` to `package.json`.

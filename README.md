@@ -59,7 +59,7 @@ For use on the command line, use the flag `npm install -g`.
 
 # Options
 
-* **tsify** will generate sourcemaps if the `--debug` option is set on Browserify.
+* **tsify** will generate inline sourcemaps if the `--debug` option is set on Browserify, regardless of the flag status in `tsconfig.json`.
 * **tsify** supports almost all options from the TypeScript compiler.  Notable exceptions:
 	* `-d, --declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 	* `--out, --outDir` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes to an internal memory store before bundling, instead of to the filesystem.
@@ -80,6 +80,8 @@ tsify will automatically read options from `tsconfig.json`.  However, some optio
 * `compilerOptions.declaration` - See [tsify#15](https://github.com/TypeStrong/tsify/issues/15)
 * `compilerOptions.out`, `compilerOptions.outDir`, and `compilerOptions.noEmit` - Use Browserify's file output options instead.  These options are overridden because **tsify** writes its intermediate JavaScript output to an internal memory store instead of to the filesystem.
 * `files` - Use Browserify's file input options instead.  This is necessary because Browserify needs to know which file(s) are the entry points to your program.
+* `compilerOptions.sourceMaps` - Source maps are only generated if the `--debug` option is set on Browserify.
+* `compilerOptions.inlineSourceMaps` - Generated source maps are always inline.
 
 ### Watchify?
 

@@ -15,4 +15,5 @@ export interface Options {
 	typescript?: string | typeof typescript;
 }
 
-export default function tsify(b: any, opts: Options): any;
+declare function tsify(b: any, opts: Options): any;
+export = tsify;

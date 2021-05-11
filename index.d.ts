@@ -3,7 +3,7 @@
 
 import * as typescript from "typescript";
 
-export interface Options {
+interface Options {
 	exclude?: string[];
 	files?: string[];
 	global?: boolean;

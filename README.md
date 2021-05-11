@@ -131,6 +131,7 @@ MIT
 
 # Changelog
 
+* 5.0.4 - Fix export in `d.ts` file.
 * 5.0.3 - Improve detection of case-sensitive file systems.
 * 5.0.2 - Remove `@types/browserify` and incorrect/undocumented use of TypeScript types in `tsify` signature.
 * 5.0.1 - Remove default import from `index.d.ts` and add `@types/browserify` dependency.

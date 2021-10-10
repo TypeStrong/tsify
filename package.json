@@ -50,9 +50,5 @@
     "test-all-versions": "^3.3.3",
     "typescript": "~2.0.3",
     "watchify": "^3.11.1"
-  },
-  "peerDependencies": {
-    "browserify": ">= 10.x",
-    "typescript": ">= 2.8"
   }
 }
